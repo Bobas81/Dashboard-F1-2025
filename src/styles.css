@@ -49,10 +49,15 @@ button {
 
 .topbar {
   display: grid;
-  grid-template-columns: minmax(300px, 1fr) minmax(520px, 0.95fr);
+  grid-template-columns: minmax(0, 1fr) minmax(480px, 0.95fr);
   gap: 24px;
   align-items: start;
   padding: 22px;
+}
+
+.title-block,
+.control-stack {
+  min-width: 0;
 }
 
 .title-block h1,
@@ -81,9 +86,9 @@ button {
 
 .track-picker {
   display: grid;
-  grid-template-columns: repeat(6, minmax(110px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 6px;
-  width: min(100%, 860px);
+  max-width: 100%;
   margin-top: 12px;
 }
 
@@ -703,7 +708,7 @@ select {
   }
 
   .track-picker {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     width: 100%;
   }
 }
