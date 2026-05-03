@@ -7,12 +7,15 @@ interface Props {
 
 export function TrackMap({ track }: Props) {
   const circuitImage = circuitImages[track.id];
+  const imageSrc = circuitImage?.src.startsWith('/')
+    ? `${import.meta.env.BASE_URL}${circuitImage.src.slice(1)}`
+    : circuitImage?.src;
 
   return (
     <div className="track-stage">
       {circuitImage ? (
         <>
-          <img className={circuitImage.fit === 'cover-top' ? 'lebalap-map map-cover-top' : 'lebalap-map'} src={circuitImage.src} alt={`Mapa del circuito ${track.name}`} />
+          <img className={circuitImage.fit === 'cover-top' ? 'lebalap-map map-cover-top' : 'lebalap-map'} src={imageSrc} alt={`Mapa del circuito ${track.name}`} />
         </>
       ) : (
         <>
