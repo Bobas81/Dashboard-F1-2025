@@ -19,10 +19,6 @@ export const circuitImages: Record<string, { src: string; source: string; fit?: 
     src: '/circuit-maps/jeddah-md-clean.png',
     source: 'Mundo Deportivo - Jeddah Corniche Circuit limpio',
   },
-  miami: {
-    src: '/circuit-maps/miami-md-clean.png',
-    source: 'Mundo Deportivo - Miami International Autodrome limpio',
-  },
   imola: {
     src: '/circuit-maps/imola-md-clean.png',
     source: 'Mundo Deportivo - Imola limpio',
@@ -82,14 +78,6 @@ export const circuitImages: Record<string, { src: string; source: string; fit?: 
   interlagos: {
     src: '/circuit-maps/interlagos.png',
     source: 'Lebalap Academy - Interlagos',
-  },
-  vegas: {
-    src: '/circuit-maps/vegas-md-clean.png',
-    source: 'Mundo Deportivo - Las Vegas limpio',
-  },
-  lusail: {
-    src: '/circuit-maps/lusail-md-clean.png',
-    source: 'Mundo Deportivo - Lusail limpio',
   },
   yasmarina: {
     src: '/circuit-maps/yasmarina.png',
