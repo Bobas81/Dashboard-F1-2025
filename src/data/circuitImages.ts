@@ -1,7 +1,7 @@
 export const circuitImages: Record<string, { src: string; source: string; fit?: 'contain' | 'cover-top' }> = {
   melbourne: {
-    src: '/circuit-maps/melbourne-md-clean.png',
-    source: 'Mundo Deportivo - Albert Park limpio',
+    src: '/circuit-maps/melbourne-custom.png',
+    source: 'Mapa personalizado - Albert Park',
   },
   shanghai: {
     src: '/circuit-maps/shanghai.png',
