@@ -12,8 +12,8 @@ export const circuitImages: Record<string, { src: string; source: string; fit?: 
     source: 'Lebalap Academy - Suzuka',
   },
   bahrain: {
-    src: '/circuit-maps/bahrain.png',
-    source: 'Lebalap Academy - Bahrain',
+    src: '/circuit-maps/bahrain-custom.png',
+    source: 'Mapa personalizado - Bahrain',
   },
   jeddah: {
     src: '/circuit-maps/jeddah-md-clean.png',
