@@ -68,8 +68,8 @@ export const circuitImages: Record<string, { src: string; source: string; fit?: 
     source: 'Lebalap Academy - Baku',
   },
   singapore: {
-    src: '/circuit-maps/singapore.png',
-    source: 'Lebalap Academy - Marina Bay',
+    src: '/circuit-maps/singapore-custom.png',
+    source: 'Mapa personalizado - Marina Bay Street Circuit',
   },
   cota: {
     src: '/circuit-maps/cota.png',
