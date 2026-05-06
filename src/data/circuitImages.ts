@@ -83,6 +83,10 @@ export const circuitImages: Record<string, { src: string; source: string; fit?: 
     src: '/circuit-maps/interlagos.png',
     source: 'Lebalap Academy - Interlagos',
   },
+  vegas: {
+    src: '/circuit-maps/vegas-custom.png',
+    source: 'Mapa personalizado - Las Vegas Strip Circuit',
+  },
   yasmarina: {
     src: '/circuit-maps/yasmarina.png',
     source: 'Lebalap Academy - Yas Marina',
