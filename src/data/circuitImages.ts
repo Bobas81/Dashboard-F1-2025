@@ -87,6 +87,10 @@ export const circuitImages: Record<string, { src: string; source: string; fit?: 
     src: '/circuit-maps/vegas-custom.png',
     source: 'Mapa personalizado - Las Vegas Strip Circuit',
   },
+  lusail: {
+    src: '/circuit-maps/lusail-custom.png',
+    source: 'Mapa personalizado - Lusail International Circuit',
+  },
   yasmarina: {
     src: '/circuit-maps/yasmarina.png',
     source: 'Lebalap Academy - Yas Marina',
