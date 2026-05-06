@@ -16,8 +16,8 @@ export const circuitImages: Record<string, { src: string; source: string; fit?: 
     source: 'Mapa personalizado - Bahrain',
   },
   jeddah: {
-    src: '/circuit-maps/jeddah-md-clean.png',
-    source: 'Mundo Deportivo - Jeddah Corniche Circuit limpio',
+    src: '/circuit-maps/jeddah-custom.png',
+    source: 'Mapa personalizado - Jeddah Corniche Circuit',
   },
   imola: {
     src: '/circuit-maps/imola-md-clean.png',
