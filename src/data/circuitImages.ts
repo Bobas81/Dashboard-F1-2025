@@ -19,6 +19,10 @@ export const circuitImages: Record<string, { src: string; source: string; fit?: 
     src: '/circuit-maps/jeddah-custom.png',
     source: 'Mapa personalizado - Jeddah Corniche Circuit',
   },
+  miami: {
+    src: '/circuit-maps/miami-custom.png',
+    source: 'Mapa personalizado - Miami International Autodrome',
+  },
   imola: {
     src: '/circuit-maps/imola-md-clean.png',
     source: 'Mundo Deportivo - Imola limpio',
