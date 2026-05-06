@@ -56,8 +56,8 @@ export const circuitImages: Record<string, { src: string; source: string; fit?: 
     source: 'Lebalap Academy - Hungaroring',
   },
   zandvoort: {
-    src: '/circuit-maps/zandvoort-md-clean.png',
-    source: 'Mundo Deportivo - Zandvoort limpio',
+    src: '/circuit-maps/zandvoort-custom.png',
+    source: 'Mapa personalizado - Circuit Zandvoort',
   },
   monza: {
     src: '/circuit-maps/monza.png',
