@@ -44,8 +44,8 @@ export const circuitImages: Record<string, { src: string; source: string; fit?: 
     source: 'Lebalap Academy - Red Bull Ring',
   },
   silverstone: {
-    src: '/circuit-maps/silverstone-md-clean.png',
-    source: 'Mundo Deportivo - Silverstone limpio',
+    src: '/circuit-maps/silverstone-custom.png',
+    source: 'Mapa personalizado - Silverstone Circuit',
   },
   spa: {
     src: '/circuit-maps/spa.png',
