@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { TrackMap } from './components/TrackMap';
 import { getSetup } from './data/setups';
 import { tracks } from './data/tracks';
-import type { SetupPreset, Track, WeatherMode } from './data/types';
+import type { GameLap, SetupPreset, Track, WeatherMode } from './data/types';
 
 const weatherLabels: Record<WeatherMode, string> = {
   dry: 'Seco',
@@ -55,6 +55,14 @@ const timeValue = (time: string) => {
   const [minutes, seconds] = time.split(':');
   return Number(minutes) * 60 + Number(seconds);
 };
+
+interface F1LapsCache {
+  fetchedAt: string;
+  tracks: Record<string, GameLap[]>;
+  errors?: Record<string, string>;
+}
+
+type F1LapsStatus = 'loading' | 'ready' | 'fallback';
 
 const flagBackgroundFor = (country: string) => {
   switch (country) {
@@ -110,10 +118,13 @@ function App() {
   const [trackId, setTrackId] = useState(tracks[0].id);
   const [weather, setWeather] = useState<WeatherMode>('dry');
   const [pickerFontPx, setPickerFontPx] = useState<number | null>(null);
+  const [liveTimes, setLiveTimes] = useState<F1LapsCache | null>(null);
+  const [liveTimesStatus, setLiveTimesStatus] = useState<F1LapsStatus>('loading');
   const pickerRef = useRef<HTMLDivElement | null>(null);
 
   const track = tracks.find((item) => item.id === trackId) ?? tracks[0];
   const setup = useMemo(() => getSetup(track, weather), [track, weather]);
+  const gameLaps = liveTimes?.tracks[track.id] ?? track.gameLaps;
 
   useEffect(() => {
     const element = pickerRef.current;
@@ -157,6 +168,30 @@ function App() {
     measureAndSet();
 
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const dataUrl = `${import.meta.env.BASE_URL}data/f1laps-times.json`;
+
+    fetch(dataUrl, { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json() as Promise<F1LapsCache>;
+      })
+      .then((data) => {
+        if (cancelled) return;
+        setLiveTimes(data);
+        setLiveTimesStatus('ready');
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setLiveTimesStatus('fallback');
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -232,7 +267,7 @@ function App() {
         </section>
 
         <aside className="right-column">
-          <TimesPanel track={track} />
+          <TimesPanel track={track} gameLaps={gameLaps} fetchedAt={liveTimes?.fetchedAt} status={liveTimesStatus} />
           <EngineerPanel track={track} weather={weather} />
         </aside>
       </section>
@@ -319,16 +354,32 @@ function TelemetryPanel({ track }: { track: Track }) {
   );
 }
 
-function TimesPanel({ track }: { track: Track }) {
+function TimesPanel({
+  track,
+  gameLaps,
+  fetchedAt,
+  status,
+}: {
+  track: Track;
+  gameLaps: GameLap[];
+  fetchedAt?: string;
+  status: F1LapsStatus;
+}) {
+  const f1LapsStatusText =
+    status === 'ready' && fetchedAt
+      ? `F1Laps actualizado: ${new Intl.DateTimeFormat('es-ES', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(fetchedAt))}`
+      : status === 'loading'
+        ? 'Actualizando F1Laps...'
+        : 'Usando datos locales del 2026-05-02.';
+
   return (
     <article className="panel times-panel">
       <span className="eyebrow">Tiempos</span>
       <h2>Referencias</h2>
       <RealRecordPanel track={track} />
-      <TimeTable title="F1 2025 PS5" rows={track.gameLaps} />
-      <p className="source-note">
-        PS5: leaderboard F1Laps consultado el 2026-05-02. Real: récord de carrera y referencia de clasificación.
-      </p>
+      <TimeTable title="F1 2025 PS5" rows={gameLaps} />
+      <p className={`source-note ${status}`}>{f1LapsStatusText}</p>
+      <p className="source-note">Real: récord de carrera y referencia de clasificación.</p>
     </article>
   );
 }

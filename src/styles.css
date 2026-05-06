@@ -557,6 +557,14 @@ select {
   line-height: 1.4;
 }
 
+.source-note.ready {
+  color: #67e47b;
+}
+
+.source-note.loading {
+  color: #f8c465;
+}
+
 .radio-lines {
   display: grid;
   gap: 10px;
