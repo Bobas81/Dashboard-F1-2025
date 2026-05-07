@@ -24,8 +24,8 @@ export const circuitImages: Record<string, { src: string; source: string; fit?: 
     source: 'Mapa personalizado - Miami International Autodrome',
   },
   imola: {
-    src: '/circuit-maps/imola-md-clean.png',
-    source: 'Mundo Deportivo - Imola limpio',
+    src: '/circuit-maps/imola-custom.png',
+    source: 'Mapa personalizado - Imola',
   },
   monaco: {
     src: '/circuit-maps/monaco.png',
