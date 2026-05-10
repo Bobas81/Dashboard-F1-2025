@@ -71,6 +71,112 @@ const makeEngineerNotes = (
 });
 
 const shapes = realTrackShapes;
+type TrackId = keyof typeof shapes;
+
+// Curated from OverTake's F1 25 track guides for circuits with reliable turn-by-turn references.
+const curatedBrakingGuides: Partial<Record<TrackId, BrakingReference[]>> = {
+  melbourne: [
+    { corner: 'T1', reference: '100 m', gear: '5', note: 'Entra desde la izquierda, toca piano interior y prioriza la salida.' },
+    { corner: 'T2', reference: 'sin frenar', gear: '6', note: 'Mantente limpio en la salida para preparar la frenada de T3.' },
+    { corner: 'T3', reference: '100 m', gear: '3', note: 'Es la horquilla lenta; no abras gas pronto o patina el eje trasero.' },
+    { corner: 'T4', reference: 'toque de freno', gear: '3', note: 'Recorta un poco el piano interior para enderezar el coche hacia T5.' },
+    { corner: 'T5', reference: 'plano', gear: '6', note: 'Llega bien colocado desde T4; un volante brusco te quita apoyo.' },
+    { corner: 'T6', reference: 'frenada suave', gear: '4', note: 'Curva de confianza; no te pases porque la salida se cierra.' },
+    { corner: 'T7', reference: 'plano', gear: '7', note: 'Tras el reprofilado se hace a fondo si el coche esta estable.' },
+    { corner: 'T8', reference: 'plano', gear: '7', note: 'Mantén el coche suelto y no pelees con el volante.' },
+    { corner: 'T9', reference: '50 m', gear: '6', note: 'Cancela el DRS justo antes, monta piano con decisión y cambia rápido de apoyo.' },
+    { corner: 'T10', reference: 'sin frenar', gear: '6', note: 'Segundo cambio de dirección del complejo rápido; precisión antes que agresividad.' },
+    { corner: 'T11', reference: 'frenada suave', gear: '4', note: 'Noventa grados importante para la siguiente zona DRS; salida limpia.' },
+    { corner: 'T12', reference: 'frena pronto', gear: '3', note: 'Es fácil irte largo cuesta abajo; paciencia con el gas en el vértice.' },
+    { corner: 'T13', reference: 'frenada fuerte', gear: '2', note: 'Prioriza rotación y no abuses del piano interior si el coche rebota.' },
+    { corner: 'T14', reference: 'ligero lift', gear: '4', note: 'Mantente pegado dentro para alinear T15.' },
+    { corner: 'T15', reference: 'sin pausa tras T14', gear: '3', note: 'Última salida crítica; abre gas pronto para lanzar el coche a meta.' },
+  ],
+  bahrain: [
+    { corner: 'T1', reference: 'justo después de 100 m', gear: '2', note: 'Frena recto y no montes demasiado el piano interior.' },
+    { corner: 'T2', reference: 'sin frenar', gear: '3', note: 'Cambio rápido de dirección; tracción delicada con depósito lleno.' },
+    { corner: 'T3', reference: 'plano con DRS', gear: '6', note: 'Acelera limpio desde T2 para no mover la zaga cuesta arriba.' },
+    { corner: 'T4', reference: '100 m', gear: '3', note: 'Recorta bastante el piano, pero sin descolocar el coche.' },
+    { corner: 'T5', reference: 'ligero lift', gear: '5', note: 'Empieza la secuencia rápida; la clave es no castigar la trasera.' },
+    { corner: 'T6', reference: 'ligero lift', gear: '5', note: 'Flick izquierda; evita clavar demasiada dirección.' },
+    { corner: 'T7', reference: 'ligero toque de freno', gear: '5', note: 'Ajusta el coche para salir bien hacia la horquilla.' },
+    { corner: 'T8', reference: '100 m', gear: '2', note: 'Horquilla lenta; apex tardío y short shift a 3ª si patina.' },
+    { corner: 'T9', reference: 'frena pronto', gear: '2', note: 'Empiezas frenando recto antes del apoyo; no bloquees la delantera izquierda.' },
+    { corner: 'T10', reference: 'sin soltar del todo', gear: '2', note: 'Continúa la frenada en apoyo y sé progresivo al volver al gas.' },
+    { corner: 'T11', reference: 'frenada suave', gear: '4', note: 'Curva de apoyo donde el coche puede insinuar sobreviraje al salir.' },
+    { corner: 'T12', reference: 'plano o lift corto', gear: '6', note: 'Depende del agarre y del desgaste; colócate bien para T13.' },
+    { corner: 'T13', reference: 'frenada fuerte', gear: '3', note: 'Apex tardío y salida vital para la siguiente zona DRS.' },
+    { corner: 'T14', reference: '100 m', gear: '2', note: 'Empieza la última frenada; rota pronto para enderezar el coche.' },
+    { corner: 'T15', reference: 'sin pausa tras T14', gear: '3', note: 'DRS detection antes del último apex; cuenta la salida a recta.' },
+  ],
+  miami: [
+    { corner: 'T1', reference: '100 m', gear: '3', note: 'Apex tardío; no te tires demasiado dentro o matas la salida.' },
+    { corner: 'T2', reference: 'sin frenar', gear: '4', note: 'Enlazada rápida; el coche premia la línea limpia.' },
+    { corner: 'T3', reference: 'sin frenar', gear: '4', note: 'Evita usar demasiado el piano interior; desestabiliza fácil.' },
+    { corner: 'T4', reference: 'plano', gear: '6', note: 'Primer curvón rápido del sector; volante suave y coche libre.' },
+    { corner: 'T5', reference: 'plano', gear: '6', note: 'No ataques los pianos si el coche ya viene cargado.' },
+    { corner: 'T6', reference: 'plano', gear: '5', note: 'Último apoyo de la secuencia antes del sector más técnico.' },
+    { corner: 'T7', reference: 'frena pronto', gear: '3', note: 'Rota el coche con calma y abre dirección para preparar T8.' },
+    { corner: 'T8', reference: 'frenada fuerte', gear: '2', note: 'Parte más lenta y rara del circuito; mantente pegado dentro.' },
+    { corner: 'T9', reference: 'sin pausa tras T8', gear: '2', note: 'Flick inmediato a izquierdas; la tracción aquí es limitada.' },
+    { corner: 'T10', reference: 'salida de T9', gear: '3', note: 'No pidas demasiado gas antes de enderezar el volante.' },
+    { corner: 'T11', reference: 'justo después de 100 m', gear: '3', note: 'Frenada fuerte y clara opción de adelantamiento; cuidado con los bloqueos.' },
+    { corner: 'T12', reference: 'sin frenar', gear: '5', note: 'Cambio rápido de apoyo; manda la colocación del coche.' },
+    { corner: 'T13', reference: 'sin frenar', gear: '4', note: 'Ritmo de sector; una corrección aquí te penaliza toda la recta.' },
+    { corner: 'T14', reference: 'entrada de curva', gear: '3', note: 'Derecha-izquierda crítica para salir bien a la recta DRS.' },
+    { corner: 'T15', reference: 'frenada fuerte', gear: '2', note: 'Último punto lento; short shift si la trasera empieza a patinar.' },
+  ],
+  imola: [
+    { corner: 'T1', reference: '100 m', gear: '4', note: 'Abraza el piano interior y cambia rápido la dirección hacia T2.' },
+    { corner: 'T2', reference: 'sin pausa tras T1', gear: '4', note: 'Usa ambos pianos, pero no demasiados o pierdes estabilidad aerodinámica.' },
+    { corner: 'T3', reference: 'justo antes de 50 m', gear: '4', note: 'Ataca con decisión, pero el piano interior es alto.' },
+    { corner: 'T4', reference: 'sin pausa tras T3', gear: '3', note: 'Piensa en ritmo; salida limpia antes que agresividad.' },
+    { corner: 'T7', reference: '50 m', gear: '2', note: 'Tosa es gran punto de adelantamiento; apex tardío y gas temprano.' },
+    { corner: 'T9', reference: 'ligero lift', gear: '5', note: 'Piratella es ciega y rápida; deja margen si el coche flota.' },
+    { corner: 'T11', reference: 'frenando con carga', gear: '4', note: 'Primera parte de Acque Minerali; no te subas a los pianos altos.' },
+    { corner: 'T12', reference: 'segunda frenada del complejo', gear: '3', note: 'Paciencia al volver al gas, la tracción sale cara si la fuerzas.' },
+    { corner: 'T14', reference: '50 m', gear: '3', note: 'Variante Alta exige atacar el primer piano y modular en el segundo.' },
+    { corner: 'T15', reference: 'sin pausa tras T14', gear: '2', note: 'Si aceleras pronto, el coche patina fácil con poca ala trasera.' },
+    { corner: 'T17', reference: '50 m', gear: '2', note: 'Rivazza 1 cuesta abajo; entra tarde para cuadrar Rivazza 2.' },
+    { corner: 'T18', reference: 'recoloca el coche', gear: '2', note: 'Última curva real de salida; importa más la tracción que el vértice.' },
+    { corner: 'T19', reference: 'plano', gear: '7', note: 'Curva a fondo en recta; abre DRS en cuanto el coche esté recto.' },
+  ],
+};
+
+const curatedEngineerNotes: Partial<Record<TrackId, EngineerNotes>> = {
+  melbourne: makeEngineerNotes(
+    'T1 y T3 usan 100 m como referencia clara; en T9-T10 la frenada cae al 50 m y exige precisión.',
+    'T9-T10 y la salida de T11-T12 condicionan buena parte de la velocidad punta en las dos zonas DRS.',
+    'Gasta ERS al salir de T15 y protege batería para el segundo y tercer sector, donde hay recta real para convertirla.',
+    'Las traseras se encienden rápido en T3 y T13 si pides gas con volante todavía cruzado.',
+    'T1 y T3 son los puntos más limpios si llegas bien colocado en DRS.',
+    'Entrar brusco en T4-T5 o pasarte en T12 rompe completamente el ritmo del tercer sector.',
+  ),
+  bahrain: makeEngineerNotes(
+    'T1, T4, T8 y T14 tienen referencia sólida en 100 m; T9-T10 requiere frenar antes de lo que pide la vista.',
+    'T9-T10 es la secuencia clave: si bloqueas delante, pierdes toda la recta hacia T11.',
+    'Usa ERS a la salida de T10 y T15; ahí conviertes de verdad la tracción en tiempo.',
+    'Bahrain castiga mucho las traseras; short shift en T8 y al salir de T10 si empiezas a patinar.',
+    'T1 y T4 son las maniobras principales; T14 funciona si preparas bien el run anterior.',
+    'Un coche demasiado agresivo de diferencial te da una vuelta buena y una carrera muy mala aquí.',
+  ),
+  miami: makeEngineerNotes(
+    'T1 y T11 son las referencias grandes con 100 m; en T7-T9 importa más frenar pronto y rotar que clavar el último metro.',
+    'El complejo T8-T10 y la salida de T14-T15 son donde más tiempo se regala si fuerzas la entrada.',
+    'Guarda ERS para la recta de atrás y la principal; el resto del trazado está más limitado por tracción que por potencia.',
+    'Las salidas lentas del estadio castigan la goma trasera; si patina, sube marcha antes y abre manos.',
+    'T11 es el adelantamiento de libro; T1 funciona si llegas bien colocado desde meta.',
+    'Atacar pianos en T2-T3 o T14-T15 como si fuese un circuito permanente suele desordenar el coche de más.',
+  ),
+  imola: makeEngineerNotes(
+    'T1-T2 tienen 100 m; T3-T4, T7 y Variante Alta bajan al entorno de 50 m y exigen coche recto antes de atacar piano.',
+    'Tosa, Acque Minerali y Rivazza mandan la vuelta; son las tres zonas donde un error cuesta una recta completa.',
+    'ERS vale más en meta y tras Rivazza; el resto del circuito está lleno de apoyo y cambios de rasante.',
+    'Los pianos altos de Imola castigan una suspensión seca; si rebota, pierdes tracción durante medio sector.',
+    'Tosa es la opción clara; una maniobra secundaria puede salir en la llegada a Rivazza si el otro sale mal de Variante Alta.',
+    'Rivazza mal hecha te hace perder desde la salida hasta la línea; no sacrifiques salida por entrar dos km/h más rápido.',
+  ),
+};
 
 const angleDelta = (previous: TrackPoint, current: TrackPoint, next: TrackPoint) => {
   const incoming = Math.atan2(current.y - previous.y, current.x - previous.x);
@@ -198,7 +304,7 @@ const makeBrakingGuide = (track: Pick<Track, 'profile' | 'setupFamily'>, map: Tr
 };
 
 const makeTrack = (
-  id: keyof typeof shapes,
+  id: TrackId,
   name: string,
   shortName: string,
   country: string,
@@ -232,12 +338,12 @@ const makeTrack = (
     map: makeMap(id, corners, drsZones),
     records: sortRecords(realReferenceTimes[id] ?? pendingRecords(name)),
     gameLaps: f1LapsGameTimes[id] ?? pendingGameLaps(name),
-    engineer: notes,
+    engineer: curatedEngineerNotes[id] ?? notes,
   } satisfies Omit<Track, 'brakingGuide'>;
 
   return {
     ...baseTrack,
-    brakingGuide: makeBrakingGuide(baseTrack, baseTrack.map),
+    brakingGuide: curatedBrakingGuides[id] ?? makeBrakingGuide(baseTrack, baseTrack.map),
   };
 };
 
