@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-09T07:21:56.888Z",
+  "fetchedAt": "2026-05-10T07:36:48.997Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -293,6 +293,16 @@
     "montreal": [
       {
         "rank": 1,
+        "time": "1:09.836",
+        "driver": "alexmoutondoc",
+        "platform": "PS5",
+        "team": "Ferrari",
+        "condition": "Time Trial seco - May 09, 2026",
+        "source": "F1Laps F1 25 leaderboard (canada), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/canada/",
+        "status": "verified"
+      },
+      {
+        "rank": 2,
         "time": "1:10.045",
         "driver": "stefwolterspri…",
         "platform": "PS5",
@@ -302,22 +312,12 @@
         "status": "verified"
       },
       {
-        "rank": 2,
+        "rank": 3,
         "time": "1:10.314",
         "driver": "gdunks",
         "platform": "PS5",
         "team": "McLaren",
         "condition": "Time Trial seco - Oct 18, 2025",
-        "source": "F1Laps F1 25 leaderboard (canada), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/canada/",
-        "status": "verified"
-      },
-      {
-        "rank": 3,
-        "time": "1:10.337",
-        "driver": "igorbrtn09",
-        "platform": "PS5",
-        "team": "Aston Martin",
-        "condition": "Time Trial seco - Sep 11, 2025",
         "source": "F1Laps F1 25 leaderboard (canada), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/canada/",
         "status": "verified"
       }
@@ -697,11 +697,11 @@
       },
       {
         "rank": 3,
-        "time": "1:32.417",
-        "driver": "Saiyzzo",
+        "time": "1:32.316",
+        "driver": "Euanian_",
         "platform": "PS5",
         "team": "McLaren",
-        "condition": "Time Trial seco - Oct 20, 2025",
+        "condition": "Time Trial seco - May 09, 2026",
         "source": "F1Laps F1 25 leaderboard (las_vegas), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/las_vegas/",
         "status": "verified"
       }
