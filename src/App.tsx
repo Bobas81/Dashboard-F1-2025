@@ -3,12 +3,18 @@ import { TrackMap } from './components/TrackMap';
 import { getSetup } from './data/setups';
 import { getStrategyPlan } from './data/strategy';
 import { tracks } from './data/tracks';
-import type { GameLap, SetupPreset, Track, WeatherMode } from './data/types';
+import type { GameLap, RaceDistance, SetupPreset, Track, WeatherMode } from './data/types';
 
 const weatherLabels: Record<WeatherMode, string> = {
   dry: 'Seco',
   intermediate: 'Lluvia ligera',
   wet: 'Mojado fuerte',
+};
+
+const raceDistanceLabels: Record<RaceDistance, string> = {
+  '25': '25%',
+  '50': '50%',
+  '100': '100%',
 };
 
 const setupGroups = (setup: SetupPreset) => [
@@ -119,6 +125,7 @@ function App() {
   const [trackId, setTrackId] = useState(tracks[0].id);
   const [weather, setWeather] = useState<WeatherMode>('dry');
   const [gridPosition, setGridPosition] = useState(10);
+  const [raceDistance, setRaceDistance] = useState<RaceDistance>('50');
   const [pickerFontPx, setPickerFontPx] = useState<number | null>(null);
   const [liveTimes, setLiveTimes] = useState<F1LapsCache | null>(null);
   const [liveTimesStatus, setLiveTimesStatus] = useState<F1LapsStatus>('loading');
@@ -126,7 +133,7 @@ function App() {
 
   const track = tracks.find((item) => item.id === trackId) ?? tracks[0];
   const setup = useMemo(() => getSetup(track, weather), [track, weather]);
-  const strategy = useMemo(() => getStrategyPlan(track, weather, gridPosition), [track, weather, gridPosition]);
+  const strategy = useMemo(() => getStrategyPlan(track, weather, gridPosition, raceDistance), [track, weather, gridPosition, raceDistance]);
   const gameLaps = liveTimes?.tracks[track.id] ?? track.gameLaps;
 
   useEffect(() => {
@@ -244,6 +251,16 @@ function App() {
                 <button onClick={() => setGridPosition((current) => Math.min(20, current + 1))} aria-label="Subir posicion">
                   +
                 </button>
+              </div>
+            </div>
+            <div className="grid-control" aria-label="Distancia de carrera">
+              <span className="grid-control-label">Distancia</span>
+              <div className="segmented segmented-compact">
+                {(Object.keys(raceDistanceLabels) as RaceDistance[]).map((distance) => (
+                  <button key={distance} className={raceDistance === distance ? 'active' : ''} onClick={() => setRaceDistance(distance)}>
+                    {raceDistanceLabels[distance]}
+                  </button>
+                ))}
               </div>
             </div>
           </div>

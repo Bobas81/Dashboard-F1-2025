@@ -217,6 +217,10 @@ select {
   gap: 8px;
 }
 
+.segmented-compact button {
+  min-height: 36px;
+}
+
 .segmented button {
   min-height: 40px;
   border: 1px solid rgba(255, 255, 255, 0.13);

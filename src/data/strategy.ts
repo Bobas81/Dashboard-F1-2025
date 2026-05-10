@@ -1,4 +1,4 @@
-import type { Track, WeatherMode } from './types';
+import type { RaceDistance, Track, WeatherMode } from './types';
 
 export interface StrategySection {
   title: string;
@@ -10,6 +10,18 @@ export interface StrategyPlan {
   summary: string;
   sections: StrategySection[];
 }
+
+const distanceMultiplier: Record<RaceDistance, number> = {
+  "25": 0.25,
+  "50": 0.5,
+  "100": 1,
+};
+
+const distanceLabel: Record<RaceDistance, string> = {
+  "25": "25%",
+  "50": "50%",
+  "100": "100%",
+};
 
 const difficultyPenalty: Record<Track['difficulty'], number> = {
   Baja: 0,
@@ -28,29 +40,47 @@ const overtakeRating = (track: Track) => {
 const pitWindow = (laps: number, startPct: number, endPct: number) =>
   `Vuelta ${Math.max(2, Math.round(laps * startPct))}-${Math.max(3, Math.round(laps * endPct))}`;
 
-const dryPlan = (track: Track, gridPosition: number): StrategyPlan => {
+const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance): StrategyPlan => {
+  const raceLaps = Math.max(5, Math.round(track.laps * distanceMultiplier[raceDistance]));
   const overtake = overtakeRating(track);
   const tyreStress = track.profile.tireStress;
   const frontHalf = gridPosition <= 10;
   const topFour = gridPosition <= 4;
-
+  const sprintish = raceDistance === '25';
+  const fullLength = raceDistance === '100';
   const conservativeBase = frontHalf || overtake === 'baja';
-  const oneStopBase = tyreStress < 84 || conservativeBase;
-  const primaryCompounds = oneStopBase
-    ? topFour
-      ? 'Medio -> Duro'
-      : frontHalf
-        ? 'Medio -> Duro'
-        : overtake === 'alta'
-          ? 'Duro -> Medio'
-          : 'Medio -> Duro'
-    : topFour
-      ? 'Medio -> Duro -> Medio'
-      : 'Duro -> Medio -> Medio';
+  const oneStopBase = sprintish
+    ? true
+    : fullLength
+      ? tyreStress < 78 || conservativeBase
+      : tyreStress < 84 || conservativeBase;
+  const needsTwoStops = !sprintish && (!oneStopBase || (fullLength && tyreStress >= 82 && overtake !== 'baja'));
 
-  const primaryWindow = oneStopBase
-    ? pitWindow(track.laps, topFour ? 0.42 : 0.38, topFour ? 0.54 : 0.5)
-    : `${pitWindow(track.laps, 0.22, 0.3)} y ${pitWindow(track.laps, 0.58, 0.7)}`;
+  const primaryCompounds = sprintish
+    ? topFour
+      ? 'Blando -> Medio'
+      : frontHalf
+        ? 'Blando -> Medio'
+        : overtake === 'alta'
+          ? 'Medio -> Blando'
+          : 'Blando -> Medio'
+    : needsTwoStops
+      ? topFour
+        ? 'Medio -> Duro -> Medio'
+        : 'Duro -> Medio -> Medio'
+      : topFour
+        ? 'Medio -> Duro'
+        : frontHalf
+          ? 'Medio -> Duro'
+          : overtake === 'alta'
+            ? 'Duro -> Medio'
+            : 'Medio -> Duro';
+
+  const primaryWindow = sprintish
+    ? pitWindow(raceLaps, 0.38, 0.52)
+    : needsTwoStops
+      ? `${pitWindow(raceLaps, 0.2, 0.28)} y ${pitWindow(raceLaps, 0.56, 0.7)}`
+      : pitWindow(raceLaps, topFour ? 0.42 : 0.38, topFour ? 0.54 : 0.5);
 
   const undercutBias =
     overtake === 'baja'
@@ -60,20 +90,25 @@ const dryPlan = (track: Track, gridPosition: number): StrategyPlan => {
         : 'si sales fuera de posicion, merece la pena abrir ventana y atacar con aire limpio';
 
   const safetyCarCall =
-    oneStopBase
+    sprintish
+      ? 'Con Safety Car temprana, parar suele tener sentido si no te mete en trafico: en 25% cada vuelta verde vale mucho.'
+      : !needsTwoStops
       ? 'Con Safety Car temprana, solo para si puedes convertir a una sola parada larga sin meterte en trafico.'
       : 'Con Safety Car temprana, evita gastar los dos compuestos de carrera demasiado pronto; este plan necesita flexibilidad.';
 
   return {
-    headline: `Plan base P${gridPosition} - ${primaryCompounds}`,
+    headline: `Plan base ${distanceLabel[raceDistance]} P${gridPosition} - ${primaryCompounds}`,
     summary:
-      oneStopBase
-        ? 'Estrategia centrada en pista y degradacion estable. Mejor para parc ferme y salida con deposito lleno.'
-        : 'Estrategia agresiva para circuitos que castigan goma o donde remontar compensa abrir el plan.',
+      sprintish
+        ? 'Distancia corta: prioriza track position, salida agresiva y una sola parada limpia.'
+        : needsTwoStops
+          ? 'Distancia larga o circuito agresivo con la goma: el plan necesita ritmo estable y reaccion a Safety Car.'
+          : 'Estrategia centrada en pista y degradacion estable. Mejor para parc ferme y salida con deposito lleno.',
     sections: [
       {
         title: 'Stint base',
         items: [
+          `Distancia estimada: ${raceLaps} vueltas (${distanceLabel[raceDistance]}).`,
           `Compuestos: ${primaryCompounds}.`,
           `Ventana principal: ${primaryWindow}.`,
           `Lectura de parrilla: desde P${gridPosition}, ${undercutBias}.`,
@@ -87,7 +122,9 @@ const dryPlan = (track: Track, gridPosition: number): StrategyPlan => {
             : frontHalf
               ? 'Salida: si no ganas posicion clara en la arrancada, entra rapido en ritmo y prepara undercut.'
               : 'Salida: busca aire limpio y evita pelear de mas en el primer stint; la estrategia gana mas que la agresion inmediata.',
-          overtake === 'alta'
+          sprintish
+            ? 'En 25% no merece tanto guardar goma: si hay hueco real, ataca antes de que la carrera se comprima.'
+            : overtake === 'alta'
             ? 'El circuito permite recuperar; si el ritmo real aparece, alarga una o dos vueltas para salir libre.'
             : 'No regales neumatico en batalla larga; en trazados con poco adelantamiento conviene priorizar salida de curva.',
         ],
@@ -103,12 +140,13 @@ const dryPlan = (track: Track, gridPosition: number): StrategyPlan => {
   };
 };
 
-const wetPlan = (track: Track, weather: WeatherMode, gridPosition: number): StrategyPlan => {
+const wetPlan = (track: Track, weather: WeatherMode, gridPosition: number, raceDistance: RaceDistance): StrategyPlan => {
+  const raceLaps = Math.max(5, Math.round(track.laps * distanceMultiplier[raceDistance]));
   const overtake = overtakeRating(track);
   const cautious = gridPosition <= 6 || overtake === 'baja';
 
   return {
-    headline: `Plan ${weather === 'wet' ? 'mojado fuerte' : 'intermedio'} P${gridPosition}`,
+    headline: `Plan ${weather === 'wet' ? 'mojado fuerte' : 'intermedio'} ${distanceLabel[raceDistance]} P${gridPosition}`,
     summary:
       weather === 'wet'
         ? 'La prioridad es cruzar bien de full wet a intermedio o mantener temperatura si la pista no evoluciona.'
@@ -117,12 +155,16 @@ const wetPlan = (track: Track, weather: WeatherMode, gridPosition: number): Stra
       {
         title: 'Base',
         items: [
+          `Distancia estimada: ${raceLaps} vueltas (${distanceLabel[raceDistance]}).`,
           weather === 'wet'
             ? 'Salida en full wet y conduce una fase de temperatura estable antes de buscar ritmo puro.'
             : 'Salida en intermedio con entrega de gas larga y freno mas recto; evita castigar demasiado el eje trasero.',
           cautious
             ? 'Desde delante o con poco adelantamiento, espera confirmacion clara antes de cruzar de compuesto.'
             : 'Desde mitad o fondo, puedes anticipar el crossover una vuelta si necesitas track position.',
+          raceDistance === '25'
+            ? 'En distancia corta, si el crossover aparece claro, merece la pena anticiparlo incluso con algo de riesgo.'
+            : 'En 50% o 100%, protege mas el neumatico equivocado en fase de transicion; un stop de mas cuesta mucho.',
         ],
       },
       {
@@ -147,9 +189,9 @@ const wetPlan = (track: Track, weather: WeatherMode, gridPosition: number): Stra
   };
 };
 
-export const getStrategyPlan = (track: Track, weather: WeatherMode, gridPosition: number): StrategyPlan => {
+export const getStrategyPlan = (track: Track, weather: WeatherMode, gridPosition: number, raceDistance: RaceDistance): StrategyPlan => {
   if (weather === 'dry') {
-    return dryPlan(track, gridPosition);
+    return dryPlan(track, gridPosition, raceDistance);
   }
-  return wetPlan(track, weather, gridPosition);
+  return wetPlan(track, weather, gridPosition, raceDistance);
 };
