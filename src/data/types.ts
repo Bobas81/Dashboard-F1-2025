@@ -104,6 +104,8 @@ export interface Track {
 }
 
 export interface SetupPreset {
+  source: string;
+  sourceUrl: string;
   aero: {
     frontWing: number;
     rearWing: number;

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { TrackMap } from './components/TrackMap';
 import { getSetup } from './data/setups';
+import { getStrategyPlan } from './data/strategy';
 import { tracks } from './data/tracks';
 import type { GameLap, SetupPreset, Track, WeatherMode } from './data/types';
 
@@ -117,6 +118,7 @@ const flagBackgroundFor = (country: string) => {
 function App() {
   const [trackId, setTrackId] = useState(tracks[0].id);
   const [weather, setWeather] = useState<WeatherMode>('dry');
+  const [gridPosition, setGridPosition] = useState(10);
   const [pickerFontPx, setPickerFontPx] = useState<number | null>(null);
   const [liveTimes, setLiveTimes] = useState<F1LapsCache | null>(null);
   const [liveTimesStatus, setLiveTimesStatus] = useState<F1LapsStatus>('loading');
@@ -124,6 +126,7 @@ function App() {
 
   const track = tracks.find((item) => item.id === trackId) ?? tracks[0];
   const setup = useMemo(() => getSetup(track, weather), [track, weather]);
+  const strategy = useMemo(() => getStrategyPlan(track, weather, gridPosition), [track, weather, gridPosition]);
   const gameLaps = liveTimes?.tracks[track.id] ?? track.gameLaps;
 
   useEffect(() => {
@@ -231,6 +234,18 @@ function App() {
                 </button>
               ))}
             </div>
+            <div className="grid-control" aria-label="Posicion de parrilla">
+              <span className="grid-control-label">Posicion de parrilla</span>
+              <div className="grid-stepper">
+                <button onClick={() => setGridPosition((current) => Math.max(1, current - 1))} aria-label="Bajar posicion">
+                  -
+                </button>
+                <strong>P{gridPosition}</strong>
+                <button onClick={() => setGridPosition((current) => Math.min(20, current + 1))} aria-label="Subir posicion">
+                  +
+                </button>
+              </div>
+            </div>
           </div>
           <SetupPanel setup={setup} weather={weather} compact />
         </div>
@@ -272,7 +287,7 @@ function App() {
         </aside>
       </section>
 
-      <StrategyPanel setup={setup} weather={weather} />
+      <StrategyPanel plan={strategy} />
     </main>
   );
 }
@@ -300,6 +315,7 @@ function SetupPanel({ setup, weather, compact = false }: { setup: SetupPreset; w
           </div>
         ))}
       </div>
+      <p className="source-note">{setup.source}</p>
     </article>
   );
 }
@@ -477,21 +493,24 @@ function BrakingGuide({ track }: { track: Track }) {
   );
 }
 
-function StrategyPanel({ setup, weather }: { setup: SetupPreset; weather: WeatherMode }) {
+function StrategyPanel({ plan }: { plan: ReturnType<typeof getStrategyPlan> }) {
   return (
     <article className="panel strategy-panel">
       <span className="eyebrow">Ingeniero de carrera</span>
-      <h2>Notas para salir a pista</h2>
-      <ul>
-        {setup.notes.map((note) => (
-          <li key={note}>{note}</li>
+      <h2>{plan.headline}</h2>
+      <p className="strategy-summary">{plan.summary}</p>
+      <div className="strategy-sections">
+        {plan.sections.map((section) => (
+          <section key={section.title} className="strategy-block">
+            <h3>{section.title}</h3>
+            <ul>
+              {section.items.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </section>
         ))}
-        <li>
-          {weather === 'dry'
-            ? 'En seco puedes atacar pianos si el coche no rebota; ajusta solo si pierdes traccion.'
-            : 'Con lluvia, usa marchas mas largas en salidas lentas y evita girar con acelerador brusco.'}
-        </li>
-      </ul>
+      </div>
     </article>
   );
 }

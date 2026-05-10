@@ -147,6 +147,46 @@ button {
   gap: 14px;
 }
 
+.grid-control {
+  display: grid;
+  gap: 8px;
+}
+
+.grid-control-label {
+  color: #aaa3a0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.grid-stepper {
+  display: grid;
+  grid-template-columns: 44px minmax(96px, auto) 44px;
+  gap: 8px;
+  align-items: center;
+}
+
+.grid-stepper button,
+.grid-stepper strong {
+  min-height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #f2ece8;
+}
+
+.grid-stepper button {
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.grid-stepper strong {
+  display: grid;
+  place-items: center;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+}
+
 .control-stack {
   display: grid;
   gap: 14px;
@@ -657,6 +697,37 @@ select {
 
 .strategy-panel {
   margin-top: 16px;
+}
+
+.strategy-summary {
+  margin: 14px 0 0;
+  color: #c9c1bd;
+  line-height: 1.45;
+}
+
+.strategy-sections {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.strategy-block {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 14px;
+}
+
+.strategy-block h3 {
+  margin: 0;
+  color: #f8c465;
+  font-size: 0.83rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.strategy-block ul {
+  margin-top: 10px;
 }
 
 .braking-guide {
