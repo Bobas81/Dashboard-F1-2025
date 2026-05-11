@@ -709,7 +709,7 @@ select {
 
 .setup-game-row {
   display: grid;
-  grid-template-columns: minmax(180px, 1.1fr) minmax(220px, 1fr) minmax(156px, 0.74fr);
+  grid-template-columns: minmax(132px, 0.78fr) minmax(250px, 1.16fr) minmax(170px, 0.78fr);
   gap: 12px;
   align-items: center;
   min-height: 44px;
@@ -800,7 +800,7 @@ select {
 }
 
 .setup-panel-compact .setup-game-row {
-  grid-template-columns: minmax(126px, 1fr) minmax(150px, 1fr) minmax(104px, 0.58fr);
+  grid-template-columns: minmax(94px, 0.62fr) minmax(190px, 1.2fr) minmax(126px, 0.72fr);
   min-height: 40px;
   padding: 0 10px;
 }
