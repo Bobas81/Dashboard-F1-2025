@@ -313,6 +313,20 @@ const flagBackgroundFor = (country: string) => {
   }
 };
 
+const flagTextStyleFor = (country: string): React.CSSProperties => {
+  const darkTextCountries = new Set(['Japon', 'Monaco', 'Canada', 'Austria', 'Singapur']);
+  const color = darkTextCountries.has(country) ? '#141316' : '#fffaf4';
+  const shadow = darkTextCountries.has(country)
+    ? '0 1px 0 rgba(255,255,255,0.9), 0 0 12px rgba(255,255,255,0.7)'
+    : '0 1px 0 rgba(0,0,0,0.95), 0 2px 8px rgba(0,0,0,0.95), 0 0 2px rgba(0,0,0,1)';
+
+  return {
+    backgroundImage: flagBackgroundFor(country),
+    ['--flag-text-color' as never]: color,
+    ['--flag-text-shadow' as never]: shadow,
+  };
+};
+
 function App() {
   const [trackId, setTrackId] = useState(tracks[0].id);
   const [weather, setWeather] = useState<WeatherMode>('dry');
@@ -417,7 +431,7 @@ function App() {
                 key={item.id}
                 className={trackId === item.id ? 'active' : ''}
                 onClick={() => setTrackId(item.id)}
-                style={{ backgroundImage: flagBackgroundFor(item.country) }}
+                style={flagTextStyleFor(item.country)}
               >
                 <span className="track-picker-name">{item.country}</span>
               </button>
