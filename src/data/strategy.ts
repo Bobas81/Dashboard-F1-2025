@@ -37,6 +37,101 @@ const overtakeRating = (track: Track) => {
   return 'baja';
 };
 
+const tractionDemand = (track: Track) => {
+  if (track.profile.traction >= 78) return 'alta';
+  if (track.profile.traction >= 60) return 'media';
+  return 'baja';
+};
+
+const curbDemand = (track: Track) => {
+  if (track.profile.curbUse >= 74) return 'alta';
+  if (track.profile.curbUse >= 56) return 'media';
+  return 'baja';
+};
+
+const firstLapsCall = (
+  track: Track,
+  gridPosition: number,
+  raceDistance: RaceDistance,
+  overtake: 'alta' | 'media' | 'baja',
+  topFour: boolean,
+  frontHalf: boolean,
+) => {
+  if (topFour) {
+    return 'Salida: protege posicion y temperatura de neumatico; no abras hueco a costa de castigar el eje trasero.';
+  }
+  if (frontHalf) {
+    if (overtake === 'baja') {
+      return `Salida: en ${track.shortName} prima defender pista; si no ganas posicion clara, entra en ritmo y cubre undercut.`;
+    }
+    return 'Salida: si no ganas posicion clara en la arrancada, entra rapido en ritmo y prepara undercut.';
+  }
+  if (raceDistance === '25') {
+    return 'Salida: desde atras, acepta algo mas de riesgo en las primeras curvas; en 25% perder tren mata la estrategia.';
+  }
+  if (overtake === 'alta') {
+    return `Salida: en ${track.shortName} puedes soltar un poco la pelea inicial si te deja salir con aire limpio y DRS util despues.`;
+  }
+  return 'Salida: busca aire limpio y evita pelear de mas en el primer stint; la estrategia gana mas que la agresion inmediata.';
+};
+
+const stintManagementCall = (
+  track: Track,
+  gridPosition: number,
+  raceDistance: RaceDistance,
+  overtake: 'alta' | 'media' | 'baja',
+) => {
+  const traction = tractionDemand(track);
+  const curbs = curbDemand(track);
+
+  if (raceDistance === '25') {
+    return 'En 25% no compensa guardar demasiado: si ves ventana de aire o hueco real, ataca antes de que la carrera se compacte.';
+  }
+  if (overtake === 'alta' && gridPosition >= 8) {
+    return `Si el ritmo aparece desde mitad de parrilla, en ${track.shortName} si compensa alargar una o dos vueltas para salir libre y atacar.`;
+  }
+  if (overtake === 'baja') {
+    return `Aqui cuesta recuperar posicion; prioriza salida de curva y evita cocinar el neumatico en pelea larga.`;
+  }
+  if (traction === 'alta') {
+    return 'La traccion manda el stint: protege rueda trasera en salida lenta antes de intentar abrir ventana con gas agresivo.';
+  }
+  if (curbs === 'alta') {
+    return 'Los pianos penalizan mucho el ritmo largo; no fuerces una vuelta de salida si te obliga a rebotar o corregir demasiado.';
+  }
+  return 'Gestiona el stint por ritmo real: si vas atascado y la goma aguanta, abre ventana; si el trafico es parecido, cubre antes.';
+};
+
+const vscCall = (track: Track, overtake: 'alta' | 'media' | 'baja', gridPosition: number) => {
+  if (overtake === 'baja') {
+    return `Con VSC en mitad de ventana, para si sales delante de rivales directos: en ${track.shortName} la posicion vale mas que una goma perfecta.`;
+  }
+  if (gridPosition <= 5) {
+    return 'Con VSC en mitad de ventana, para solo si mantienes pista limpia; desde delante regalar trafico rompe la carrera.';
+  }
+  return 'Con VSC en mitad de ventana, inclinate por parar: el ahorro de tiempo suele valer mas que una vuelta extra en trafico.';
+};
+
+const wetBaseCall = (
+  track: Track,
+  weather: WeatherMode,
+  gridPosition: number,
+  raceDistance: RaceDistance,
+  cautious: boolean,
+) => {
+  if (weather === 'wet') {
+    return tractionDemand(track) === 'alta'
+      ? 'Salida en full wet con gas largo y volante limpio; aqui la temperatura trasera importa tanto como evitar aquaplaning.'
+      : 'Salida en full wet y conduce una fase de temperatura estable antes de buscar ritmo puro.';
+  }
+
+  if (tractionDemand(track) === 'alta') {
+    return 'Salida en intermedio con entrega de gas larga y freno recto; el eje trasero se castiga rapido si aceleras pronto.';
+  }
+
+  return 'Salida en intermedio con apoyo progresivo; evita castigar demasiado el eje trasero en las primeras vueltas.';
+};
+
 const pitWindow = (laps: number, startPct: number, endPct: number) =>
   `Vuelta ${Math.max(2, Math.round(laps * startPct))}-${Math.max(3, Math.round(laps * endPct))}`;
 
@@ -117,23 +212,15 @@ const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance)
       {
         title: 'Primeras vueltas',
         items: [
-          topFour
-            ? 'Salida: protege posicion y temperatura de neumatico; no abras hueco a costa de castigar el eje trasero.'
-            : frontHalf
-              ? 'Salida: si no ganas posicion clara en la arrancada, entra rapido en ritmo y prepara undercut.'
-              : 'Salida: busca aire limpio y evita pelear de mas en el primer stint; la estrategia gana mas que la agresion inmediata.',
-          sprintish
-            ? 'En 25% no merece tanto guardar goma: si hay hueco real, ataca antes de que la carrera se comprima.'
-            : overtake === 'alta'
-            ? 'El circuito permite recuperar; si el ritmo real aparece, alarga una o dos vueltas para salir libre.'
-            : 'No regales neumatico en batalla larga; en trazados con poco adelantamiento conviene priorizar salida de curva.',
+          firstLapsCall(track, gridPosition, raceDistance, overtake, topFour, frontHalf),
+          stintManagementCall(track, gridPosition, raceDistance, overtake),
         ],
       },
       {
         title: 'Safety Car',
         items: [
           safetyCarCall,
-          'Con VSC en mitad de ventana, inclinate por parar: el ahorro de tiempo suele valer mas que una vuelta extra en trafico.',
+          vscCall(track, overtake, gridPosition),
         ],
       },
     ],
@@ -156,9 +243,7 @@ const wetPlan = (track: Track, weather: WeatherMode, gridPosition: number, raceD
         title: 'Base',
         items: [
           `Distancia estimada: ${raceLaps} vueltas (${distanceLabel[raceDistance]}).`,
-          weather === 'wet'
-            ? 'Salida en full wet y conduce una fase de temperatura estable antes de buscar ritmo puro.'
-            : 'Salida en intermedio con entrega de gas larga y freno mas recto; evita castigar demasiado el eje trasero.',
+          wetBaseCall(track, weather, gridPosition, raceDistance, cautious),
           cautious
             ? 'Desde delante o con poco adelantamiento, espera confirmacion clara antes de cruzar de compuesto.'
             : 'Desde mitad o fondo, puedes anticipar el crossover una vuelta si necesitas track position.',
