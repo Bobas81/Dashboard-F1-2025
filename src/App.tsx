@@ -427,29 +427,37 @@ function App() {
       </section>
 
       <section className="race-layout">
-        <section className="center-column panel">
-          <div className="section-heading">
-            <div>
-              <span className="eyebrow">Mapa activo</span>
-              <h2>{track.shortName}</h2>
-            </div>
-            <div className="badge-row">
-              <span>{track.corners} curvas</span>
-              <span>{track.drsZones} DRS</span>
-              <span>{track.difficulty}</span>
-            </div>
-          </div>
-          <TrackMap track={track} />
-          <div className="sector-strip">
-            {track.sectorFocus.map((sector, index) => (
-              <div key={sector}>
-                <strong>S{index + 1}</strong>
-                <span>{sector}</span>
+        <div className="track-column">
+          <section className="center-column panel">
+            <div className="section-heading">
+              <div>
+                <span className="eyebrow">Mapa activo</span>
+                <h2>{track.shortName}</h2>
               </div>
-            ))}
-          </div>
-          <BrakingGuide track={track} />
-        </section>
+              <div className="badge-row">
+                <span>{track.corners} curvas</span>
+                <span>{track.drsZones} DRS</span>
+                <span>{track.difficulty}</span>
+              </div>
+            </div>
+            <TrackMap track={track} />
+            <div className="sector-strip">
+              {track.sectorFocus.map((sector, index) => (
+                <div key={sector}>
+                  <strong>S{index + 1}</strong>
+                  <span>{sector}</span>
+                </div>
+              ))}
+            </div>
+            <BrakingGuide track={track} />
+          </section>
+
+          <section className="bottom-grid">
+            <TimesPanel track={track} gameLaps={gameLaps} fetchedAt={liveTimes?.fetchedAt} status={liveTimesStatus} />
+            <StatPanel track={track} />
+            <TelemetryPanel track={track} />
+          </section>
+        </div>
 
         <aside className="strategy-column">
           <section className="panel race-controls">
@@ -493,12 +501,6 @@ function App() {
             plan={strategy}
           />
         </aside>
-      </section>
-
-      <section className="bottom-grid">
-        <TimesPanel track={track} gameLaps={gameLaps} fetchedAt={liveTimes?.fetchedAt} status={liveTimesStatus} />
-        <StatPanel track={track} />
-        <TelemetryPanel track={track} />
       </section>
     </main>
   );

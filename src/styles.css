@@ -239,6 +239,13 @@ select {
   grid-template-columns: minmax(620px, 1.18fr) minmax(460px, 0.82fr);
   gap: 16px;
   margin-top: 16px;
+  align-items: start;
+}
+
+.track-column {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
 }
 
 .strategy-column {
@@ -257,9 +264,8 @@ select {
 
 .bottom-grid {
   display: grid;
-  grid-template-columns: minmax(340px, 1.1fr) minmax(240px, 0.65fr) minmax(300px, 0.8fr);
+  grid-template-columns: minmax(270px, 0.8fr) minmax(145px, 0.4fr) minmax(300px, 1fr);
   gap: 16px;
-  margin-top: 16px;
   align-items: start;
 }
 
