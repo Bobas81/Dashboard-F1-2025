@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-10T07:36:48.997Z",
+  "fetchedAt": "2026-05-11T08:39:16.641Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -293,11 +293,11 @@
     "montreal": [
       {
         "rank": 1,
-        "time": "1:09.836",
+        "time": "1:09.743",
         "driver": "alexmoutondoc",
         "platform": "PS5",
         "team": "Ferrari",
-        "condition": "Time Trial seco - May 09, 2026",
+        "condition": "Time Trial seco - May 10, 2026",
         "source": "F1Laps F1 25 leaderboard (canada), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/canada/",
         "status": "verified"
       },
