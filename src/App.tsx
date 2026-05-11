@@ -30,40 +30,34 @@ interface SetupDisplayRow {
 
 const setupTabMeta: Record<SetupTabId, { label: string; title: string; description: string }> = {
   aero: {
-    label: 'AERODYNAMICS',
-    title: 'Aerodynamics',
-    description:
-      'Ajusta el ala delantera y trasera para equilibrar carga y velocidad punta. Mas ala mejora el agarre, pero penaliza la recta.',
+    label: 'AERODINAMICA',
+    title: 'Aerodinamica',
+    description: 'Equilibra carga y velocidad punta. Mas ala mejora apoyo, pero penaliza la recta.',
   },
   transmission: {
-    label: 'TRANSMISSION',
-    title: 'Transmission',
-    description:
-      'El diferencial cambia como entrega traccion el coche. Mas bloqueo ayuda en salida, pero castiga mas la goma y el giro.',
+    label: 'TRANSMISION',
+    title: 'Transmision',
+    description: 'El diferencial cambia la traccion a la salida. Mas bloqueo ayuda a acelerar, pero gira peor.',
   },
   geometry: {
-    label: 'SUSPENSION GEOMETRY',
-    title: 'Suspension Geometry',
-    description:
-      'Camber y toe definen la huella del neumatico y el giro inicial. Mucho camber gana apoyo lateral, pero aumenta desgaste.',
+    label: 'GEOMETRIA',
+    title: 'Geometria',
+    description: 'Caidas y convergencias definen apoyo y giro inicial. Un ajuste agresivo desgasta mas la goma.',
   },
   suspension: {
     label: 'SUSPENSION',
     title: 'Suspension',
-    description:
-      'Muelles, barras y alturas controlan estabilidad, absorcion de piano y respuesta en frenada o aceleracion.',
+    description: 'Muelles, barras y alturas controlan estabilidad, pianos y respuesta en frenada y aceleracion.',
   },
   brakes: {
-    label: 'BRAKES',
-    title: 'Brakes',
-    description:
-      'Bias y presion determinan la mordida al inicio de la frenada. Mucho bias delantero bloquea antes; atras hace el coche mas vivo.',
+    label: 'FRENOS',
+    title: 'Frenos',
+    description: 'Reparto y presion marcan la mordida inicial. Mas delante bloquea antes; mas atras rota mejor.',
   },
   tyres: {
-    label: 'TYRES',
-    title: 'Tyres',
-    description:
-      'La presion cambia temperatura, resistencia a la rodadura y apoyo. Mas presion libera punta; menos presion da huella y traccion.',
+    label: 'NEUMATICOS',
+    title: 'Neumaticos',
+    description: 'La presion cambia temperatura y apoyo. Mas presion libera punta; menos presion mejora traccion.',
   },
 };
 
@@ -83,7 +77,7 @@ const formatGameValue = (value: number, kind: 'int' | 'percent' | 'degree' | 'ps
 const getSetupRows = (setup: SetupPreset): Record<SetupTabId, SetupDisplayRow[]> => ({
   aero: [
     {
-      label: 'Front Wing Aero',
+      label: 'Ala delantera',
       valueLabel: formatGameValue(setup.aero.frontWing, 'int'),
       min: 0,
       max: 50,
@@ -91,7 +85,7 @@ const getSetupRows = (setup: SetupPreset): Record<SetupTabId, SetupDisplayRow[]>
       rangeText: 'Min 0 - 50 Max',
     },
     {
-      label: 'Rear Wing Aero',
+      label: 'Ala trasera',
       valueLabel: formatGameValue(setup.aero.rearWing, 'int'),
       min: 0,
       max: 50,
@@ -101,25 +95,25 @@ const getSetupRows = (setup: SetupPreset): Record<SetupTabId, SetupDisplayRow[]>
   ],
   transmission: [
     {
-      label: 'Differential Adjustment On Throttle',
+      label: 'Diferencial con gas',
       valueLabel: formatGameValue(setup.transmission.differentialOn, 'percent'),
       min: 10,
       max: 100,
       current: setup.transmission.differentialOn,
-      rangeText: 'Unlocked 10% - 100% Locked',
+      rangeText: 'Abierto 10% - 100% Bloqueado',
     },
     {
-      label: 'Differential Adjustment Off Throttle',
+      label: 'Diferencial sin gas',
       valueLabel: formatGameValue(setup.transmission.differentialOff, 'percent'),
       min: 10,
       max: 100,
       current: setup.transmission.differentialOff,
-      rangeText: 'Unlocked 10% - 100% Locked',
+      rangeText: 'Abierto 10% - 100% Bloqueado',
     },
   ],
   geometry: [
     {
-      label: 'Front Camber',
+      label: 'Caida delantera',
       valueLabel: formatGameValue(setup.suspensionGeometry.frontCamber, 'degree'),
       min: -3.5,
       max: -2.5,
@@ -127,7 +121,7 @@ const getSetupRows = (setup: SetupPreset): Record<SetupTabId, SetupDisplayRow[]>
       rangeText: 'Min -3.50 - -2.50 Max',
     },
     {
-      label: 'Rear Camber',
+      label: 'Caida trasera',
       valueLabel: formatGameValue(setup.suspensionGeometry.rearCamber, 'degree'),
       min: -2,
       max: -1,
@@ -135,7 +129,7 @@ const getSetupRows = (setup: SetupPreset): Record<SetupTabId, SetupDisplayRow[]>
       rangeText: 'Min -2.00 - -1.00 Max',
     },
     {
-      label: 'Front Toe-Out',
+      label: 'Toe delantero',
       valueLabel: formatGameValue(setup.suspensionGeometry.frontToe, 'degree'),
       min: 0,
       max: 0.2,
@@ -143,7 +137,7 @@ const getSetupRows = (setup: SetupPreset): Record<SetupTabId, SetupDisplayRow[]>
       rangeText: 'Min 0.00 - 0.20 Max',
     },
     {
-      label: 'Rear Toe-In',
+      label: 'Toe trasero',
       valueLabel: formatGameValue(setup.suspensionGeometry.rearToe, 'degree'),
       min: 0.1,
       max: 0.25,
@@ -153,39 +147,39 @@ const getSetupRows = (setup: SetupPreset): Record<SetupTabId, SetupDisplayRow[]>
   ],
   suspension: [
     {
-      label: 'Front Suspension',
+      label: 'Suspension delantera',
       valueLabel: formatGameValue(setup.suspension.frontSuspension, 'int'),
       min: 1,
       max: 41,
       current: setup.suspension.frontSuspension,
-      rangeText: 'Soft 1 - 41 Firm',
+      rangeText: 'Blando 1 - 41 Duro',
     },
     {
-      label: 'Rear Suspension',
+      label: 'Suspension trasera',
       valueLabel: formatGameValue(setup.suspension.rearSuspension, 'int'),
       min: 1,
       max: 41,
       current: setup.suspension.rearSuspension,
-      rangeText: 'Soft 1 - 41 Firm',
+      rangeText: 'Blando 1 - 41 Duro',
     },
     {
-      label: 'Front Anti-Roll Bar',
+      label: 'Barra delantera',
       valueLabel: formatGameValue(setup.suspension.frontAntiRoll, 'int'),
       min: 1,
       max: 21,
       current: setup.suspension.frontAntiRoll,
-      rangeText: 'Soft 1 - 21 Firm',
+      rangeText: 'Blando 1 - 21 Duro',
     },
     {
-      label: 'Rear Anti-Roll Bar',
+      label: 'Barra trasera',
       valueLabel: formatGameValue(setup.suspension.rearAntiRoll, 'int'),
       min: 1,
       max: 21,
       current: setup.suspension.rearAntiRoll,
-      rangeText: 'Soft 1 - 21 Firm',
+      rangeText: 'Blando 1 - 21 Duro',
     },
     {
-      label: 'Front Ride Height',
+      label: 'Altura delantera',
       valueLabel: formatGameValue(setup.suspension.frontRideHeight, 'int'),
       min: 15,
       max: 35,
@@ -193,7 +187,7 @@ const getSetupRows = (setup: SetupPreset): Record<SetupTabId, SetupDisplayRow[]>
       rangeText: 'Min 15 - 35 Max',
     },
     {
-      label: 'Rear Ride Height',
+      label: 'Altura trasera',
       valueLabel: formatGameValue(setup.suspension.rearRideHeight, 'int'),
       min: 40,
       max: 60,
@@ -203,15 +197,15 @@ const getSetupRows = (setup: SetupPreset): Record<SetupTabId, SetupDisplayRow[]>
   ],
   brakes: [
     {
-      label: 'Front Brake Bias',
+      label: 'Reparto de freno',
       valueLabel: formatGameValue(setup.brakes.bias, 'percent'),
       min: 50,
       max: 70,
       current: setup.brakes.bias,
-      rangeText: 'Front 70% - 50% Rear',
+      rangeText: 'Delante 70% - 50% Detras',
     },
     {
-      label: 'Brake Pressure',
+      label: 'Presion de freno',
       valueLabel: formatGameValue(setup.brakes.pressure, 'percent'),
       min: 80,
       max: 100,
@@ -221,7 +215,7 @@ const getSetupRows = (setup: SetupPreset): Record<SetupTabId, SetupDisplayRow[]>
   ],
   tyres: [
     {
-      label: 'Front Right Tyre Pressure',
+      label: 'Presion delantero derecho',
       valueLabel: formatGameValue(setup.tyres.frontRight, 'psi'),
       min: 22.5,
       max: 29.5,
@@ -229,7 +223,7 @@ const getSetupRows = (setup: SetupPreset): Record<SetupTabId, SetupDisplayRow[]>
       rangeText: '22.5 - 29.5 PSI',
     },
     {
-      label: 'Front Left Tyre Pressure',
+      label: 'Presion delantero izquierdo',
       valueLabel: formatGameValue(setup.tyres.frontLeft, 'psi'),
       min: 22.5,
       max: 29.5,
@@ -237,7 +231,7 @@ const getSetupRows = (setup: SetupPreset): Record<SetupTabId, SetupDisplayRow[]>
       rangeText: '22.5 - 29.5 PSI',
     },
     {
-      label: 'Rear Right Tyre Pressure',
+      label: 'Presion trasero derecho',
       valueLabel: formatGameValue(setup.tyres.rearRight, 'psi'),
       min: 20.5,
       max: 26.5,
@@ -245,7 +239,7 @@ const getSetupRows = (setup: SetupPreset): Record<SetupTabId, SetupDisplayRow[]>
       rangeText: '20.5 - 26.5 PSI',
     },
     {
-      label: 'Rear Left Tyre Pressure',
+      label: 'Presion trasero izquierdo',
       valueLabel: formatGameValue(setup.tyres.rearLeft, 'psi'),
       min: 20.5,
       max: 26.5,
@@ -555,12 +549,8 @@ function SetupPanel({ setup, weather, compact = false }: { setup: SetupPreset; w
           })}
         </div>
         <aside className="setup-game-aside">
-          <div className="setup-car-outline" aria-hidden="true">
-            <span />
-          </div>
           <h3>{activeMeta.title}</h3>
           <p>{activeMeta.description}</p>
-          <p className="source-note">{setup.source}</p>
         </aside>
       </div>
     </article>
@@ -630,10 +620,10 @@ function TimesPanel({
 }) {
   const f1LapsStatusText =
     status === 'ready' && fetchedAt
-      ? `F1Laps actualizado: ${new Intl.DateTimeFormat('es-ES', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(fetchedAt))}`
+      ? 'Tiempos de F1 2025 PS5 cargados.'
       : status === 'loading'
-        ? 'Actualizando F1Laps...'
-        : 'Usando datos locales del 2026-05-02.';
+        ? 'Actualizando tiempos...'
+        : 'Mostrando datos locales.';
 
   return (
     <article className="panel times-panel">
@@ -642,7 +632,6 @@ function TimesPanel({
       <RealRecordPanel track={track} />
       <TimeTable title="F1 2025 PS5" rows={gameLaps} />
       <p className={`source-note ${status}`}>{f1LapsStatusText}</p>
-      <p className="source-note">Real: récord de carrera y referencia de clasificación.</p>
     </article>
   );
 }
