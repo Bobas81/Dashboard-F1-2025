@@ -26,8 +26,8 @@ export const getEngineerRadioNotes = (
   track: Track,
   weather: WeatherMode,
   setup: SetupPreset,
-  gridPosition: number,
-  raceDistance: RaceDistance,
+  _gridPosition: number,
+  _raceDistance: RaceDistance,
 ) => {
   const notes: TaggedNote[] = [];
   const add = (text: string, score: number, topic: string) => notes.push({ text, score, topic });
@@ -63,24 +63,6 @@ export const getEngineerRadioNotes = (
 
   if (track.profile.curbUse >= 78) {
     add('Los pianos aquí solo compensan si el coche absorbe el golpe recto; si entra cruzado, pierdes más de lo que ganas.', 99, 'track-curbs');
-  }
-
-  if (track.drsZones <= 1) {
-    add('Con tan pocas zonas claras de adelantamiento, prepara mejor la salida de curva y no gastes neumático peleando sin opción real.', 97, 'track-overtake-limit');
-  }
-
-  if (gridPosition <= 4) {
-    add('Saliendo delante, la prioridad es controlar temperatura y no dar ventana de undercut por sobrecalentar la goma pronto.', 103, 'grid-front');
-  } else if (gridPosition >= 12) {
-    add('Saliendo atrás, acepta comprometer algo la primera vuelta si te deja entrar en aire limpio o ganar DRS útil pronto.', 95, 'grid-back');
-  }
-
-  if (raceDistance === '25') {
-    add('En 25%, el neumático se puede usar con más agresividad; no conviertas la gestión en una carrera demasiado conservadora.', 89, 'distance-25');
-  }
-
-  if (raceDistance === '100') {
-    add('En 100%, el stint se rompe antes por sobrecalentamiento acumulado que por una sola frenada; mantén la misma técnica bajo combustible alto.', 93, 'distance-100');
   }
 
   if (setup.transmission.differentialOn >= 80) {
