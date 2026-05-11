@@ -259,6 +259,52 @@ const strategyReason = (
   return 'Decision: una parada porque la degradacion esperada es controlable y el segundo pit no devuelve suficiente tiempo.';
 };
 
+const gridStrategyRead = (
+  track: Track,
+  profile: TrackStrategyProfile,
+  overtake: 'alta' | 'media' | 'baja',
+  gridPosition: number,
+  needsTwoStops: boolean,
+) => {
+  if (gridPosition <= 4) {
+    if (profile.trackPosition === 'alta' || overtake === 'baja') {
+      return 'protege posicion y cubre undercut; desde delante no regales aire limpio por buscar una vuelta perfecta';
+    }
+    return 'mantén pista limpia y usa la primera parada para cubrir rivales directos, no para inventar una carrera distinta';
+  }
+
+  if (gridPosition <= 10) {
+    if (profile.undercut === 'alta') {
+      return 'si te quedas bloqueado en DRS, adelanta la parada; desde zona de puntos el undercut vale mas que alargar sin aire';
+    }
+    if (overtake === 'baja') {
+      return 'prioriza salida de curva y no pierdas DRS; atacar en pista es dificil, asi que la parada debe cubrir trafico directo';
+    }
+    return 'puedes jugar con aire limpio si el ritmo aparece, pero sin alargar hasta caer en trafico lento';
+  }
+
+  if (gridPosition <= 16) {
+    if (needsTwoStops) {
+      return 'usa la estrategia para salir de trenes lentos; la segunda parada solo funciona si vuelves con aire y goma claramente mejor';
+    }
+    if (overtake === 'baja') {
+      return 'busca aire limpio antes que pelear cada curva; si adelantar cuesta, gana tiempo evitando trafico en la ventana de pit';
+    }
+    return 'desde mitad de parrilla puedes abrir ventana pronto si el primer stint queda bloqueado por trafico';
+  }
+
+  if (needsTwoStops) {
+    return `desde el fondo en ${track.shortName}, no defiendas por defender: usa aire limpio y dos stints agresivos para recuperar tiempo`;
+  }
+  if (track.profile.tireStress >= 84) {
+    return `desde el fondo en ${track.shortName}, evita peleas largas; cuida goma y para cuando puedas salir fuera de trafico`;
+  }
+  if (overtake === 'alta') {
+    return 'desde el fondo, prioriza ritmo y bateria para adelantar en las zonas claras antes de copiar la estrategia del tren';
+  }
+  return 'desde el fondo, la prioridad es aire limpio; alarga o anticipa segun trafico, no segun la posicion del coche de delante';
+};
+
 const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance): StrategyPlan => {
   const raceLaps = Math.max(5, Math.round(track.laps * distanceMultiplier[raceDistance]));
   const profile = getStrategyProfile(track);
@@ -304,16 +350,7 @@ const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance)
           topFour ? (profile.pitLoss === 'alta' ? 0.52 : 0.54) : profile.trackPosition === 'alta' ? 0.47 : 0.5,
         );
 
-  const undercutBias =
-    profile.trackPosition === 'alta'
-      ? 'prima cubrir undercut y no regalar pista; el aire limpio vale menos que mantener posicion'
-      : profile.undercut === 'alta'
-        ? 'el undercut tiene peso real aqui; si te quedas clavado, adelanta la parada y obliga a reaccionar'
-        : overtake === 'baja'
-      ? 'prioriza cubrir undercut y defender pista; perder posicion aqui cuesta mucho recuperarla'
-      : overtake === 'media'
-        ? 'puedes jugar a undercut si sales del primer stint atascado, pero sin romper el neumatico delantero'
-        : 'si sales fuera de posicion, merece la pena abrir ventana y atacar con aire limpio';
+  const undercutBias = gridStrategyRead(track, profile, overtake, gridPosition, needsTwoStops);
 
   const safetyCarCall =
     sprintish
