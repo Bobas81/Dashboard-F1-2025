@@ -17,46 +17,243 @@ const raceDistanceLabels: Record<RaceDistance, string> = {
   '100': '100%',
 };
 
-const setupGroups = (setup: SetupPreset) => [
-  { title: 'Aerodinamica', rows: [['Ala del.', setup.aero.frontWing], ['Ala tras.', setup.aero.rearWing]] },
-  {
-    title: 'Transmision',
-    rows: [
-      ['Diff ON', `${setup.transmission.differentialOn}%`],
-      ['Diff OFF', `${setup.transmission.differentialOff}%`],
-      ['Freno motor', `${setup.transmission.engineBraking}%`],
-    ],
+type SetupTabId = 'aero' | 'transmission' | 'geometry' | 'suspension' | 'brakes' | 'tyres';
+
+interface SetupDisplayRow {
+  label: string;
+  valueLabel: string;
+  min: number;
+  max: number;
+  current: number;
+  rangeText: string;
+}
+
+const setupTabMeta: Record<SetupTabId, { label: string; title: string; description: string }> = {
+  aero: {
+    label: 'AERODYNAMICS',
+    title: 'Aerodynamics',
+    description:
+      'Ajusta el ala delantera y trasera para equilibrar carga y velocidad punta. Mas ala mejora el agarre, pero penaliza la recta.',
   },
-  {
-    title: 'Geometria',
-    rows: [
-      ['Camber del.', setup.suspensionGeometry.frontCamber],
-      ['Camber tras.', setup.suspensionGeometry.rearCamber],
-      ['Toe del.', setup.suspensionGeometry.frontToe],
-      ['Toe tras.', setup.suspensionGeometry.rearToe],
-    ],
+  transmission: {
+    label: 'TRANSMISSION',
+    title: 'Transmission',
+    description:
+      'El diferencial cambia como entrega traccion el coche. Mas bloqueo ayuda en salida, pero castiga mas la goma y el giro.',
   },
-  {
+  geometry: {
+    label: 'SUSPENSION GEOMETRY',
+    title: 'Suspension Geometry',
+    description:
+      'Camber y toe definen la huella del neumatico y el giro inicial. Mucho camber gana apoyo lateral, pero aumenta desgaste.',
+  },
+  suspension: {
+    label: 'SUSPENSION',
     title: 'Suspension',
-    rows: [
-      ['Susp. del.', setup.suspension.frontSuspension],
-      ['Susp. tras.', setup.suspension.rearSuspension],
-      ['ARB del.', setup.suspension.frontAntiRoll],
-      ['ARB tras.', setup.suspension.rearAntiRoll],
-      ['Altura del.', setup.suspension.frontRideHeight],
-      ['Altura tras.', setup.suspension.rearRideHeight],
-    ],
+    description:
+      'Muelles, barras y alturas controlan estabilidad, absorcion de piano y respuesta en frenada o aceleracion.',
   },
-  {
-    title: 'Frenos y presiones',
-    rows: [
-      ['Presion freno', `${setup.brakes.pressure}%`],
-      ['Bias', `${setup.brakes.bias}%`],
-      ['FL / FR', `${setup.tyres.frontLeft} / ${setup.tyres.frontRight} psi`],
-      ['RL / RR', `${setup.tyres.rearLeft} / ${setup.tyres.rearRight} psi`],
-    ],
+  brakes: {
+    label: 'BRAKES',
+    title: 'Brakes',
+    description:
+      'Bias y presion determinan la mordida al inicio de la frenada. Mucho bias delantero bloquea antes; atras hace el coche mas vivo.',
   },
-];
+  tyres: {
+    label: 'TYRES',
+    title: 'Tyres',
+    description:
+      'La presion cambia temperatura, resistencia a la rodadura y apoyo. Mas presion libera punta; menos presion da huella y traccion.',
+  },
+};
+
+const formatGameValue = (value: number, kind: 'int' | 'percent' | 'degree' | 'psi') => {
+  switch (kind) {
+    case 'percent':
+      return `${value}%`;
+    case 'degree':
+      return `${value.toFixed(2)}°`;
+    case 'psi':
+      return `${value.toFixed(1)} psi`;
+    default:
+      return String(Math.round(value));
+  }
+};
+
+const getSetupRows = (setup: SetupPreset): Record<SetupTabId, SetupDisplayRow[]> => ({
+  aero: [
+    {
+      label: 'Front Wing Aero',
+      valueLabel: formatGameValue(setup.aero.frontWing, 'int'),
+      min: 0,
+      max: 50,
+      current: setup.aero.frontWing,
+      rangeText: 'Min 0 - 50 Max',
+    },
+    {
+      label: 'Rear Wing Aero',
+      valueLabel: formatGameValue(setup.aero.rearWing, 'int'),
+      min: 0,
+      max: 50,
+      current: setup.aero.rearWing,
+      rangeText: 'Min 0 - 50 Max',
+    },
+  ],
+  transmission: [
+    {
+      label: 'Differential Adjustment On Throttle',
+      valueLabel: formatGameValue(setup.transmission.differentialOn, 'percent'),
+      min: 10,
+      max: 100,
+      current: setup.transmission.differentialOn,
+      rangeText: 'Unlocked 10% - 100% Locked',
+    },
+    {
+      label: 'Differential Adjustment Off Throttle',
+      valueLabel: formatGameValue(setup.transmission.differentialOff, 'percent'),
+      min: 10,
+      max: 100,
+      current: setup.transmission.differentialOff,
+      rangeText: 'Unlocked 10% - 100% Locked',
+    },
+  ],
+  geometry: [
+    {
+      label: 'Front Camber',
+      valueLabel: formatGameValue(setup.suspensionGeometry.frontCamber, 'degree'),
+      min: -3.5,
+      max: -2.5,
+      current: setup.suspensionGeometry.frontCamber,
+      rangeText: 'Min -3.50 - -2.50 Max',
+    },
+    {
+      label: 'Rear Camber',
+      valueLabel: formatGameValue(setup.suspensionGeometry.rearCamber, 'degree'),
+      min: -2,
+      max: -1,
+      current: setup.suspensionGeometry.rearCamber,
+      rangeText: 'Min -2.00 - -1.00 Max',
+    },
+    {
+      label: 'Front Toe-Out',
+      valueLabel: formatGameValue(setup.suspensionGeometry.frontToe, 'degree'),
+      min: 0,
+      max: 0.2,
+      current: setup.suspensionGeometry.frontToe,
+      rangeText: 'Min 0.00 - 0.20 Max',
+    },
+    {
+      label: 'Rear Toe-In',
+      valueLabel: formatGameValue(setup.suspensionGeometry.rearToe, 'degree'),
+      min: 0.1,
+      max: 0.25,
+      current: setup.suspensionGeometry.rearToe,
+      rangeText: 'Min 0.10 - 0.25 Max',
+    },
+  ],
+  suspension: [
+    {
+      label: 'Front Suspension',
+      valueLabel: formatGameValue(setup.suspension.frontSuspension, 'int'),
+      min: 1,
+      max: 41,
+      current: setup.suspension.frontSuspension,
+      rangeText: 'Soft 1 - 41 Firm',
+    },
+    {
+      label: 'Rear Suspension',
+      valueLabel: formatGameValue(setup.suspension.rearSuspension, 'int'),
+      min: 1,
+      max: 41,
+      current: setup.suspension.rearSuspension,
+      rangeText: 'Soft 1 - 41 Firm',
+    },
+    {
+      label: 'Front Anti-Roll Bar',
+      valueLabel: formatGameValue(setup.suspension.frontAntiRoll, 'int'),
+      min: 1,
+      max: 21,
+      current: setup.suspension.frontAntiRoll,
+      rangeText: 'Soft 1 - 21 Firm',
+    },
+    {
+      label: 'Rear Anti-Roll Bar',
+      valueLabel: formatGameValue(setup.suspension.rearAntiRoll, 'int'),
+      min: 1,
+      max: 21,
+      current: setup.suspension.rearAntiRoll,
+      rangeText: 'Soft 1 - 21 Firm',
+    },
+    {
+      label: 'Front Ride Height',
+      valueLabel: formatGameValue(setup.suspension.frontRideHeight, 'int'),
+      min: 15,
+      max: 35,
+      current: setup.suspension.frontRideHeight,
+      rangeText: 'Min 15 - 35 Max',
+    },
+    {
+      label: 'Rear Ride Height',
+      valueLabel: formatGameValue(setup.suspension.rearRideHeight, 'int'),
+      min: 40,
+      max: 60,
+      current: setup.suspension.rearRideHeight,
+      rangeText: 'Min 40 - 60 Max',
+    },
+  ],
+  brakes: [
+    {
+      label: 'Front Brake Bias',
+      valueLabel: formatGameValue(setup.brakes.bias, 'percent'),
+      min: 50,
+      max: 70,
+      current: setup.brakes.bias,
+      rangeText: 'Front 70% - 50% Rear',
+    },
+    {
+      label: 'Brake Pressure',
+      valueLabel: formatGameValue(setup.brakes.pressure, 'percent'),
+      min: 80,
+      max: 100,
+      current: setup.brakes.pressure,
+      rangeText: 'Min 80% - 100% Max',
+    },
+  ],
+  tyres: [
+    {
+      label: 'Front Right Tyre Pressure',
+      valueLabel: formatGameValue(setup.tyres.frontRight, 'psi'),
+      min: 22.5,
+      max: 29.5,
+      current: setup.tyres.frontRight,
+      rangeText: '22.5 - 29.5 PSI',
+    },
+    {
+      label: 'Front Left Tyre Pressure',
+      valueLabel: formatGameValue(setup.tyres.frontLeft, 'psi'),
+      min: 22.5,
+      max: 29.5,
+      current: setup.tyres.frontLeft,
+      rangeText: '22.5 - 29.5 PSI',
+    },
+    {
+      label: 'Rear Right Tyre Pressure',
+      valueLabel: formatGameValue(setup.tyres.rearRight, 'psi'),
+      min: 20.5,
+      max: 26.5,
+      current: setup.tyres.rearRight,
+      rangeText: '20.5 - 26.5 PSI',
+    },
+    {
+      label: 'Rear Left Tyre Pressure',
+      valueLabel: formatGameValue(setup.tyres.rearLeft, 'psi'),
+      min: 20.5,
+      max: 26.5,
+      current: setup.tyres.rearLeft,
+      rangeText: '20.5 - 26.5 PSI',
+    },
+  ],
+});
 
 const timeValue = (time: string) => {
   const [minutes, seconds] = time.split(':');
@@ -310,6 +507,10 @@ function App() {
 }
 
 function SetupPanel({ setup, weather, compact = false }: { setup: SetupPreset; weather: WeatherMode; compact?: boolean }) {
+  const [tab, setTab] = useState<SetupTabId>('aero');
+  const rowsByTab = useMemo(() => getSetupRows(setup), [setup]);
+  const activeMeta = setupTabMeta[tab];
+
   return (
     <article className={compact ? 'setup-panel setup-panel-compact' : 'panel setup-panel'}>
       <div className="section-heading">
@@ -319,20 +520,49 @@ function SetupPanel({ setup, weather, compact = false }: { setup: SetupPreset; w
         </div>
         <span className="parc-ferme">Qualy + carrera</span>
       </div>
-      <div className="setup-cards">
-        {setupGroups(setup).map((group) => (
-          <div className="setup-card" key={group.title}>
-            <h3>{group.title}</h3>
-            {group.rows.map(([label, value]) => (
-              <div className="setup-row" key={label}>
-                <span>{label}</span>
-                <strong>{value}</strong>
-              </div>
-            ))}
-          </div>
+      <div className="setup-game-tabs" role="tablist" aria-label="Categorias del setup">
+        {(Object.keys(setupTabMeta) as SetupTabId[]).map((tabId) => (
+          <button
+            key={tabId}
+            type="button"
+            role="tab"
+            aria-selected={tab === tabId}
+            className={tab === tabId ? 'active' : ''}
+            onClick={() => setTab(tabId)}
+          >
+            {setupTabMeta[tabId].label}
+          </button>
         ))}
       </div>
-      <p className="source-note">{setup.source}</p>
+      <div className="setup-game-shell">
+        <div className="setup-game-rows">
+          {rowsByTab[tab].map((row) => {
+            const progress = ((row.current - row.min) / (row.max - row.min)) * 100;
+
+            return (
+              <div className="setup-game-row" key={row.label}>
+                <span className="setup-game-label">{row.label}</span>
+                <div className="setup-game-control">
+                  <span className="setup-chevrons">&lsaquo; &rsaquo;</span>
+                  <div className="setup-slider">
+                    <span className="setup-slider-fill" style={{ width: `${progress}%` }} />
+                  </div>
+                  <strong className="setup-game-value">{row.valueLabel}</strong>
+                </div>
+                <small className="setup-game-range">{row.rangeText}</small>
+              </div>
+            );
+          })}
+        </div>
+        <aside className="setup-game-aside">
+          <div className="setup-car-outline" aria-hidden="true">
+            <span />
+          </div>
+          <h3>{activeMeta.title}</h3>
+          <p>{activeMeta.description}</p>
+          <p className="source-note">{setup.source}</p>
+        </aside>
+      </div>
     </article>
   );
 }
