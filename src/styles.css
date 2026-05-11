@@ -709,7 +709,7 @@ select {
 
 .setup-game-row {
   display: grid;
-  grid-template-columns: minmax(180px, 1.1fr) minmax(220px, 1fr) minmax(170px, 0.9fr);
+  grid-template-columns: minmax(180px, 1.1fr) minmax(220px, 1fr) minmax(156px, 0.74fr);
   gap: 12px;
   align-items: center;
   min-height: 44px;
@@ -764,6 +764,7 @@ select {
   font-size: 0.88rem;
   text-align: right;
   white-space: nowrap;
+  min-width: 0;
 }
 
 .setup-game-aside {
@@ -799,14 +800,14 @@ select {
 }
 
 .setup-panel-compact .setup-game-row {
-  grid-template-columns: minmax(126px, 1fr) minmax(150px, 1fr) minmax(112px, 0.7fr);
+  grid-template-columns: minmax(126px, 1fr) minmax(150px, 1fr) minmax(104px, 0.58fr);
   min-height: 40px;
   padding: 0 10px;
 }
 
 .setup-panel-compact .setup-game-label,
 .setup-panel-compact .setup-game-range {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
 }
 
 .setup-panel-compact .setup-game-value {
