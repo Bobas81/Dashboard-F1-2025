@@ -424,8 +424,35 @@ function App() {
             ))}
           </div>
         </div>
-        <div className="control-stack">
-          <div className="controls" aria-label="Controles del dashboard">
+      </section>
+
+      <section className="race-layout">
+        <section className="center-column panel">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">Mapa activo</span>
+              <h2>{track.shortName}</h2>
+            </div>
+            <div className="badge-row">
+              <span>{track.corners} curvas</span>
+              <span>{track.drsZones} DRS</span>
+              <span>{track.difficulty}</span>
+            </div>
+          </div>
+          <TrackMap track={track} />
+          <div className="sector-strip">
+            {track.sectorFocus.map((sector, index) => (
+              <div key={sector}>
+                <strong>S{index + 1}</strong>
+                <span>{sector}</span>
+              </div>
+            ))}
+          </div>
+          <BrakingGuide track={track} />
+        </section>
+
+        <aside className="strategy-column">
+          <section className="panel race-controls">
             <div className="segmented" aria-label="Clima">
               {(Object.keys(weatherLabels) as WeatherMode[]).map((mode) => (
                 <button key={mode} className={weather === mode ? 'active' : ''} onClick={() => setWeather(mode)}>
@@ -455,43 +482,8 @@ function App() {
                 ))}
               </div>
             </div>
-          </div>
+          </section>
           <SetupPanel setup={setup} weather={weather} compact />
-        </div>
-      </section>
-
-      <section className="dashboard-grid">
-        <aside className="left-column">
-          <StatPanel track={track} />
-          <TelemetryPanel track={track} />
-        </aside>
-
-        <section className="center-column panel">
-          <div className="section-heading">
-            <div>
-              <span className="eyebrow">Mapa activo</span>
-              <h2>{track.shortName}</h2>
-            </div>
-            <div className="badge-row">
-              <span>{track.corners} curvas</span>
-              <span>{track.drsZones} DRS</span>
-              <span>{track.difficulty}</span>
-            </div>
-          </div>
-          <TrackMap track={track} />
-          <div className="sector-strip">
-            {track.sectorFocus.map((sector, index) => (
-              <div key={sector}>
-                <strong>S{index + 1}</strong>
-                <span>{sector}</span>
-              </div>
-            ))}
-          </div>
-          <BrakingGuide track={track} />
-        </section>
-
-        <aside className="right-column">
-          <TimesPanel track={track} gameLaps={gameLaps} fetchedAt={liveTimes?.fetchedAt} status={liveTimesStatus} />
           <EngineerSuitePanel
             track={track}
             weather={weather}
@@ -501,6 +493,12 @@ function App() {
             plan={strategy}
           />
         </aside>
+      </section>
+
+      <section className="bottom-grid">
+        <TimesPanel track={track} gameLaps={gameLaps} fetchedAt={liveTimes?.fetchedAt} status={liveTimesStatus} />
+        <StatPanel track={track} />
+        <TelemetryPanel track={track} />
       </section>
     </main>
   );
