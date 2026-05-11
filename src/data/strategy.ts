@@ -187,6 +187,78 @@ const wetBaseCall = (
 const pitWindow = (laps: number, startPct: number, endPct: number) =>
   `Vuelta ${Math.max(2, Math.round(laps * startPct))}-${Math.max(3, Math.round(laps * endPct))}`;
 
+const twoStopPressure = (
+  track: Track,
+  profile: TrackStrategyProfile,
+  overtake: 'alta' | 'media' | 'baja',
+  gridPosition: number,
+  raceDistance: RaceDistance,
+) => {
+  if (raceDistance === '25') return -99;
+
+  const tyreStress = track.profile.tireStress;
+  let score = 0;
+
+  score += tyreStress >= 90 ? 5 : tyreStress >= 84 ? 4 : tyreStress >= 78 ? 2 : tyreStress >= 70 ? 1 : 0;
+  score += raceDistance === '100' ? 3 : -1;
+  score += profile.pitLoss === 'baja' ? 2 : profile.pitLoss === 'alta' ? -2 : 0;
+  score += profile.undercut === 'alta' ? 2 : profile.undercut === 'media' ? 1 : 0;
+  score += profile.trackPosition === 'baja' ? 1 : profile.trackPosition === 'alta' ? -2 : 0;
+  score += overtake === 'alta' ? 1 : overtake === 'baja' ? -1 : 0;
+
+  if (gridPosition >= 11) score += 1;
+  if (gridPosition <= 4) score -= profile.trackPosition === 'alta' ? 2 : 1;
+  if (raceDistance === '50' && tyreStress < 84) score -= 4;
+  if (profile.pitLoss === 'alta' && profile.trackPosition === 'alta') score -= 2;
+
+  return score;
+};
+
+const shouldTwoStop = (
+  track: Track,
+  profile: TrackStrategyProfile,
+  overtake: 'alta' | 'media' | 'baja',
+  gridPosition: number,
+  raceDistance: RaceDistance,
+) => {
+  if (raceDistance === '25') return false;
+  if (raceDistance === '50' && track.profile.tireStress < 84) return false;
+  if (profile.pitLoss === 'alta' && profile.trackPosition === 'alta' && track.profile.tireStress < 90) return false;
+
+  const threshold = raceDistance === '100' ? 5 : track.profile.tireStress >= 90 ? 6 : 7;
+  return twoStopPressure(track, profile, overtake, gridPosition, raceDistance) >= threshold;
+};
+
+const strategyReason = (
+  track: Track,
+  profile: TrackStrategyProfile,
+  needsTwoStops: boolean,
+  raceDistance: RaceDistance,
+  pressureScore: number,
+) => {
+  if (raceDistance === '25') {
+    return 'Decision: en 25% se evita una segunda parada salvo Safety Car, porque la carrera no da vueltas suficientes para recuperar el tiempo perdido.';
+  }
+
+  if (needsTwoStops) {
+    if (track.profile.tireStress >= 90) {
+      return `Decision: dos paradas por degradacion extrema (${track.profile.tireStress}/100); la segunda parada evita arrastrar goma vieja al final.`;
+    }
+    if (profile.pitLoss === 'baja' && profile.undercut === 'alta') {
+      return 'Decision: dos paradas porque la perdida de pit es baja y el undercut funciona; atacar con goma nueva paga mas que estirar.';
+    }
+    return `Decision: dos paradas por combinacion de degradacion, distancia y oportunidad estrategica (presion ${pressureScore}).`;
+  }
+
+  if (track.profile.tireStress >= 84) {
+    return 'Decision: una parada agresiva; la degradacion es alta, pero perder pista o tiempo en boxes pesa mas que montar otro juego nuevo.';
+  }
+  if (profile.trackPosition === 'alta') {
+    return 'Decision: una parada por posicion en pista; aqui parar de mas suele dejarte atrapado aunque tengas neumatico mejor.';
+  }
+  return 'Decision: una parada porque la degradacion esperada es controlable y el segundo pit no devuelve suficiente tiempo.';
+};
+
 const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance): StrategyPlan => {
   const raceLaps = Math.max(5, Math.round(track.laps * distanceMultiplier[raceDistance]));
   const profile = getStrategyProfile(track);
@@ -195,14 +267,8 @@ const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance)
   const frontHalf = gridPosition <= 10;
   const topFour = gridPosition <= 4;
   const sprintish = raceDistance === '25';
-  const fullLength = raceDistance === '100';
-  const conservativeBase = frontHalf || overtake === 'baja' || profile.trackPosition === 'alta';
-  const oneStopBase = sprintish
-    ? true
-    : fullLength
-      ? tyreStress < 78 || conservativeBase
-      : tyreStress < 84 || conservativeBase;
-  const needsTwoStops = !sprintish && (!oneStopBase || (fullLength && tyreStress >= 82 && overtake !== 'baja' && profile.pitLoss !== 'alta'));
+  const pressureScore = twoStopPressure(track, profile, overtake, gridPosition, raceDistance);
+  const needsTwoStops = shouldTwoStop(track, profile, overtake, gridPosition, raceDistance);
 
   const primaryCompounds = sprintish
     ? topFour
@@ -213,9 +279,11 @@ const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance)
           ? 'Medio -> Blando'
           : 'Blando -> Medio'
     : needsTwoStops
-      ? topFour
-        ? 'Medio -> Duro -> Medio'
-        : 'Duro -> Medio -> Medio'
+      ? raceDistance === '50'
+        ? 'Medio -> Duro -> Blando'
+        : topFour
+          ? 'Medio -> Duro -> Medio'
+          : 'Medio -> Duro -> Medio'
       : topFour
         ? 'Medio -> Duro'
         : frontHalf
@@ -227,7 +295,9 @@ const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance)
   const primaryWindow = sprintish
     ? pitWindow(raceLaps, 0.38, 0.52)
     : needsTwoStops
-      ? `${pitWindow(raceLaps, profile.pitLoss === 'baja' ? 0.18 : 0.2, profile.pitLoss === 'baja' ? 0.27 : 0.29)} y ${pitWindow(raceLaps, 0.56, profile.trackPosition === 'alta' ? 0.68 : 0.72)}`
+      ? raceDistance === '50'
+        ? `${pitWindow(raceLaps, profile.pitLoss === 'baja' ? 0.16 : 0.18, profile.pitLoss === 'baja' ? 0.24 : 0.26)} y ${pitWindow(raceLaps, 0.58, profile.trackPosition === 'alta' ? 0.66 : 0.72)}`
+        : `${pitWindow(raceLaps, profile.pitLoss === 'baja' ? 0.2 : 0.22, profile.pitLoss === 'baja' ? 0.3 : 0.32)} y ${pitWindow(raceLaps, 0.58, profile.trackPosition === 'alta' ? 0.68 : 0.74)}`
       : pitWindow(
           raceLaps,
           topFour ? (profile.undercut === 'alta' ? 0.4 : 0.42) : profile.undercut === 'alta' ? 0.35 : 0.38,
@@ -273,6 +343,7 @@ const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance)
           `Distancia estimada: ${raceLaps} vueltas (${distanceLabel[raceDistance]}).`,
           `Compuestos: ${primaryCompounds}.`,
           `Ventana principal: ${primaryWindow}.`,
+          strategyReason(track, profile, needsTwoStops, raceDistance, pressureScore),
           `Lectura de parrilla: desde P${gridPosition}, ${undercutBias}.`,
         ],
       },
