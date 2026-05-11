@@ -616,28 +616,17 @@ function TelemetryPanel({ track }: { track: Track }) {
 function TimesPanel({
   track,
   gameLaps,
-  fetchedAt,
-  status,
 }: {
   track: Track;
   gameLaps: GameLap[];
   fetchedAt?: string;
   status: F1LapsStatus;
 }) {
-  const f1LapsStatusText =
-    status === 'ready' && fetchedAt
-      ? 'Tiempos de F1 2025 PS5 cargados.'
-      : status === 'loading'
-        ? 'Actualizando tiempos...'
-        : 'Mostrando datos locales.';
-
   return (
     <article className="panel times-panel">
       <span className="eyebrow">Tiempos</span>
-      <h2>Referencias</h2>
       <RealRecordPanel track={track} />
       <TimeTable title="F1 2025 PS5" rows={gameLaps} />
-      <p className={`source-note ${status}`}>{f1LapsStatusText}</p>
     </article>
   );
 }

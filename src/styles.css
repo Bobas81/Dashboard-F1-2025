@@ -264,9 +264,13 @@ select {
 
 .bottom-grid {
   display: grid;
-  grid-template-columns: minmax(270px, 0.8fr) minmax(145px, 0.4fr) minmax(300px, 1fr);
+  grid-template-columns: minmax(245px, 0.68fr) minmax(220px, 0.6fr) minmax(220px, 0.72fr);
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
+}
+
+.bottom-grid > .panel {
+  height: 100%;
 }
 
 .center-column {
@@ -530,8 +534,8 @@ select {
 
 .time-table {
   display: grid;
-  gap: 8px;
-  margin-top: 14px;
+  gap: 6px;
+  margin-top: 10px;
 }
 
 .time-table h3,
@@ -546,8 +550,8 @@ select {
 
 .real-records {
   display: grid;
-  gap: 8px;
-  margin-top: 14px;
+  gap: 6px;
+  margin-top: 10px;
 }
 
 .record-row {
@@ -555,40 +559,40 @@ select {
   grid-template-columns: minmax(112px, 0.85fr) auto;
   gap: 4px 12px;
   align-items: baseline;
-  min-height: 54px;
+  min-height: 46px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.05);
-  padding: 10px;
+  padding: 8px;
 }
 
 .record-row span {
   color: #d8d0cc;
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   font-weight: 800;
 }
 
 .record-row strong {
   color: #fff;
-  font-size: 1.12rem;
+  font-size: 1rem;
 }
 
 .record-row small {
   grid-column: 1 / -1;
   color: #a69e9a;
-  font-size: 0.78rem;
+  font-size: 0.7rem;
 }
 
 .time-row {
   display: grid;
-  grid-template-columns: 44px 1fr auto;
-  gap: 10px;
+  grid-template-columns: 38px 1fr auto;
+  gap: 8px;
   align-items: center;
-  min-height: 48px;
+  min-height: 42px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.05);
-  padding: 8px;
+  padding: 6px;
 }
 
 .time-row.pending {
@@ -598,8 +602,8 @@ select {
 .rank {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   border-radius: 6px;
   background: #99162a;
   font-weight: 900;
@@ -613,7 +617,11 @@ select {
 .time-row small,
 .source-note {
   color: #a69e9a;
-  font-size: 0.78rem;
+  font-size: 0.7rem;
+}
+
+.time-row strong {
+  font-size: 0.9rem;
 }
 
 .source-note {
