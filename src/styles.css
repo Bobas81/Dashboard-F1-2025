@@ -506,6 +506,10 @@ select {
   margin-bottom: 14px;
 }
 
+.engineer-suite-panel h2 {
+  margin-bottom: 14px;
+}
+
 .time-table {
   display: grid;
   gap: 8px;
@@ -624,6 +628,16 @@ select {
 .radio-lines span {
   color: #36d7c9;
   font-weight: 900;
+}
+
+.engineer-suite-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.engineer-suite-block + .engineer-suite-block {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 16px;
 }
 
 .setup-grid {

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { TrackMap } from './components/TrackMap';
+import { getEngineerRadioNotes } from './data/engineerRadio';
 import { getSetup } from './data/setups';
 import { getStrategyPlan } from './data/strategy';
 import { tracks } from './data/tracks';
@@ -491,11 +492,16 @@ function App() {
 
         <aside className="right-column">
           <TimesPanel track={track} gameLaps={gameLaps} fetchedAt={liveTimes?.fetchedAt} status={liveTimesStatus} />
-          <EngineerPanel track={track} weather={weather} />
+          <EngineerSuitePanel
+            track={track}
+            weather={weather}
+            setup={setup}
+            gridPosition={gridPosition}
+            raceDistance={raceDistance}
+            plan={strategy}
+          />
         </aside>
       </section>
-
-      <StrategyPanel plan={strategy} />
     </main>
   );
 }
@@ -681,28 +687,54 @@ function TimeTable({ title, rows }: { title: string; rows: Array<{ rank: number;
   );
 }
 
-function EngineerPanel({ track, weather }: { track: Track; weather: WeatherMode }) {
-  const notes = [
-    ...track.engineer.braking,
-    ...track.engineer.criticalCorners,
-    ...track.engineer.ers,
-    ...track.engineer.tyres,
-    ...track.engineer.overtaking,
-    ...track.engineer.commonMistakes,
-  ];
+function EngineerSuitePanel({
+  track,
+  weather,
+  setup,
+  gridPosition,
+  raceDistance,
+  plan,
+}: {
+  track: Track;
+  weather: WeatherMode;
+  setup: SetupPreset;
+  gridPosition: number;
+  raceDistance: RaceDistance;
+  plan: ReturnType<typeof getStrategyPlan>;
+}) {
+  const notes = getEngineerRadioNotes(track, weather, setup, gridPosition, raceDistance);
 
   return (
-    <article className="panel engineer-panel">
-      <span className="eyebrow">Canal ingeniero</span>
-      <h2>{weather === 'dry' ? 'Plan en seco' : 'Plan con lluvia'}</h2>
-      <div className="radio-lines">
-        {notes.slice(0, 6).map((note, index) => (
-          <p key={note}>
-            <span>{String(index + 1).padStart(2, '0')}</span>
-            {note}
-          </p>
-        ))}
-      </div>
+    <article className="panel engineer-suite-panel">
+      <section className="engineer-suite-block">
+        <span className="eyebrow">Canal ingeniero</span>
+        <h2>{weather === 'dry' ? 'Plan en seco' : 'Plan con lluvia'}</h2>
+        <div className="radio-lines">
+          {notes.map((note, index) => (
+            <p key={note}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              {note}
+            </p>
+          ))}
+        </div>
+      </section>
+      <section className="engineer-suite-block engineer-suite-race">
+        <span className="eyebrow">Ingeniero de carrera</span>
+        <h2>{plan.headline}</h2>
+        <p className="strategy-summary">{plan.summary}</p>
+        <div className="strategy-sections">
+          {plan.sections.map((section) => (
+            <section key={section.title} className="strategy-block">
+              <h3>{section.title}</h3>
+              <ul>
+                {section.items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </section>
     </article>
   );
 }
@@ -723,28 +755,6 @@ function BrakingGuide({ track }: { track: Track }) {
             <span>{item.corner} - {item.reference} - {item.gear}ª marcha.</span>
             <small>{item.note}</small>
           </div>
-        ))}
-      </div>
-    </article>
-  );
-}
-
-function StrategyPanel({ plan }: { plan: ReturnType<typeof getStrategyPlan> }) {
-  return (
-    <article className="panel strategy-panel">
-      <span className="eyebrow">Ingeniero de carrera</span>
-      <h2>{plan.headline}</h2>
-      <p className="strategy-summary">{plan.summary}</p>
-      <div className="strategy-sections">
-        {plan.sections.map((section) => (
-          <section key={section.title} className="strategy-block">
-            <h3>{section.title}</h3>
-            <ul>
-              {section.items.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </section>
         ))}
       </div>
     </article>
