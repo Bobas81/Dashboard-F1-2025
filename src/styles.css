@@ -93,7 +93,7 @@ button {
   position: relative;
   display: grid;
   gap: 2px;
-  justify-items: start;
+  place-items: center;
   min-height: 44px;
   border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: 6px;
@@ -102,7 +102,7 @@ button {
   background-position: center;
   color: var(--flag-text-color, #fff);
   padding: 6px 8px;
-  text-align: left;
+  text-align: center;
   overflow: hidden;
   isolation: isolate;
   animation: flag-background-wave 5.4s ease-in-out infinite;
@@ -133,7 +133,8 @@ button {
   position: relative;
   z-index: 1;
   display: inline-block;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   padding: 7px 8px;
   color: var(--flag-text-color, #fff);
   text-shadow: var(--flag-text-shadow, 0 2px 8px rgba(0, 0, 0, 0.95));
