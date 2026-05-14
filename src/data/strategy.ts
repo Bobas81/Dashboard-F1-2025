@@ -22,7 +22,8 @@ interface TrackStrategyProfile {
 }
 
 interface TyreRule {
-  minSets: number;
+  minSets?: number;
+  maxStintLaps?: number;
   dryNote: string;
   wetNote: string;
 }
@@ -83,6 +84,12 @@ const getTyreRule = (track: Track): TyreRule | null =>
         dryNote: 'Regla Monaco: carrera con minimo 3 juegos de neumaticos; en seco usa al menos 2 compuestos slick distintos.',
         wetNote: 'Regla Monaco: carrera con minimo 3 juegos de neumaticos. En lluvia, usa la regla para no quedarte corto si cruza a seco.',
       }
+    : track.id === 'lusail'
+      ? {
+          maxStintLaps: 25,
+          dryNote: 'Regla Qatar: cada juego no debe superar 25 vueltas acumuladas; en 100% evita stints largos de medio o duro.',
+          wetNote: 'Regla Qatar: respeta el limite de 25 vueltas por juego si la pista cruza a seco y vuelves a slicks.',
+        }
     : null;
 
 const overtakeRating = (track: Track) => {
@@ -236,7 +243,11 @@ const shouldTwoStop = (
   gridPosition: number,
   raceDistance: RaceDistance,
 ) => {
-  if (getTyreRule(track)?.minSets === 3) return true;
+  const raceLaps = Math.max(5, Math.round(track.laps * distanceMultiplier[raceDistance]));
+  const tyreRule = getTyreRule(track);
+
+  if (tyreRule?.minSets === 3) return true;
+  if (tyreRule?.maxStintLaps && raceLaps > tyreRule.maxStintLaps * 2) return true;
   if (raceDistance === '25') return false;
   if (raceDistance === '50' && track.profile.tireStress < 84) return false;
   if (profile.pitLoss === 'alta' && profile.trackPosition === 'alta' && track.profile.tireStress < 90) return false;
@@ -256,6 +267,9 @@ const strategyReason = (
 
   if (tyreRule?.minSets === 3 && needsTwoStops) {
     return `Decision: dos paradas obligatorias por regla de carrera (${tyreRule.dryNote})`;
+  }
+  if (tyreRule?.maxStintLaps && needsTwoStops) {
+    return `Decision: dos paradas por limite de stint (${tyreRule.dryNote})`;
   }
   if (raceDistance === '25') {
     return 'Decision: en 25% se evita una segunda parada salvo Safety Car, porque la carrera no da vueltas suficientes para recuperar el tiempo perdido.';
@@ -361,7 +375,9 @@ const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance)
             : 'Medio -> Duro';
 
   const primaryWindow = needsTwoStops
-      ? raceDistance === '50'
+      ? tyreRule?.maxStintLaps && raceLaps > tyreRule.maxStintLaps * 2
+        ? `${pitWindow(raceLaps, 0.3, 0.4)} y ${pitWindow(raceLaps, 0.6, 0.72)}`
+      : raceDistance === '50'
         ? `${pitWindow(raceLaps, profile.pitLoss === 'baja' ? 0.16 : 0.18, profile.pitLoss === 'baja' ? 0.24 : 0.26)} y ${pitWindow(raceLaps, 0.58, profile.trackPosition === 'alta' ? 0.66 : 0.72)}`
         : `${pitWindow(raceLaps, profile.pitLoss === 'baja' ? 0.2 : 0.22, profile.pitLoss === 'baja' ? 0.3 : 0.32)} y ${pitWindow(raceLaps, 0.58, profile.trackPosition === 'alta' ? 0.68 : 0.74)}`
     : sprintish
