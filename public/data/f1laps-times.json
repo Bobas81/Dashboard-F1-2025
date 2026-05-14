@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-13T08:14:01.203Z",
+  "fetchedAt": "2026-05-14T08:05:02.577Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -69,6 +69,16 @@
     "suzuka": [
       {
         "rank": 1,
+        "time": "1:24.280",
+        "driver": "Ambrous",
+        "platform": "PS5",
+        "team": "McLaren",
+        "condition": "Time Trial seco - May 13, 2026",
+        "source": "F1Laps F1 25 leaderboard (japan), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/japan/",
+        "status": "verified"
+      },
+      {
+        "rank": 2,
         "time": "1:27.015",
         "driver": "itzyliaab",
         "platform": "PS5",
@@ -78,22 +88,12 @@
         "status": "verified"
       },
       {
-        "rank": 2,
+        "rank": 3,
         "time": "1:27.345",
         "driver": "woodbassniki",
         "platform": "PS5",
         "team": "Williams",
         "condition": "Time Trial seco - Apr 21, 2026",
-        "source": "F1Laps F1 25 leaderboard (japan), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/japan/",
-        "status": "verified"
-      },
-      {
-        "rank": 3,
-        "time": "1:27.470",
-        "driver": "Skylxrd",
-        "platform": "PS5",
-        "team": "Red Bull Racing",
-        "condition": "Time Trial seco - Mar 20, 2026",
         "source": "F1Laps F1 25 leaderboard (japan), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/japan/",
         "status": "verified"
       }
