@@ -21,6 +21,12 @@ interface TrackStrategyProfile {
   wetVolatility: StrategyLevel;
 }
 
+interface TyreRule {
+  minSets: number;
+  dryNote: string;
+  wetNote: string;
+}
+
 const distanceMultiplier: Record<RaceDistance, number> = {
   "25": 0.25,
   "50": 0.5,
@@ -69,6 +75,15 @@ const strategyProfiles: Record<string, TrackStrategyProfile> = {
 
 const getStrategyProfile = (track: Track): TrackStrategyProfile =>
   strategyProfiles[track.id] ?? { pitLoss: 'media', trackPosition: 'media', undercut: 'media', safetyCar: 'media', wetVolatility: 'media' };
+
+const getTyreRule = (track: Track): TyreRule | null =>
+  track.id === 'monaco'
+    ? {
+        minSets: 3,
+        dryNote: 'Regla Monaco: carrera con minimo 3 juegos de neumaticos; en seco usa al menos 2 compuestos slick distintos.',
+        wetNote: 'Regla Monaco: carrera con minimo 3 juegos de neumaticos. En lluvia, usa la regla para no quedarte corto si cruza a seco.',
+      }
+    : null;
 
 const overtakeRating = (track: Track) => {
   const score = track.drsZones * 16 + track.profile.braking * 0.32 + (track.lengthKm - 4) * 7 - difficultyPenalty[track.difficulty];
@@ -221,6 +236,7 @@ const shouldTwoStop = (
   gridPosition: number,
   raceDistance: RaceDistance,
 ) => {
+  if (getTyreRule(track)?.minSets === 3) return true;
   if (raceDistance === '25') return false;
   if (raceDistance === '50' && track.profile.tireStress < 84) return false;
   if (profile.pitLoss === 'alta' && profile.trackPosition === 'alta' && track.profile.tireStress < 90) return false;
@@ -236,6 +252,11 @@ const strategyReason = (
   raceDistance: RaceDistance,
   pressureScore: number,
 ) => {
+  const tyreRule = getTyreRule(track);
+
+  if (tyreRule?.minSets === 3 && needsTwoStops) {
+    return `Decision: dos paradas obligatorias por regla de carrera (${tyreRule.dryNote})`;
+  }
   if (raceDistance === '25') {
     return 'Decision: en 25% se evita una segunda parada salvo Safety Car, porque la carrera no da vueltas suficientes para recuperar el tiempo perdido.';
   }
@@ -313,10 +334,17 @@ const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance)
   const frontHalf = gridPosition <= 10;
   const topFour = gridPosition <= 4;
   const sprintish = raceDistance === '25';
+  const tyreRule = getTyreRule(track);
   const pressureScore = twoStopPressure(track, profile, overtake, gridPosition, raceDistance);
   const needsTwoStops = shouldTwoStop(track, profile, overtake, gridPosition, raceDistance);
 
-  const primaryCompounds = sprintish
+  const primaryCompounds = needsTwoStops
+    ? raceDistance === '50' || tyreRule?.minSets === 3
+      ? 'Medio -> Duro -> Blando'
+      : topFour
+        ? 'Medio -> Duro -> Medio'
+        : 'Medio -> Duro -> Medio'
+    : sprintish
     ? topFour
       ? 'Blando -> Medio'
       : frontHalf
@@ -324,12 +352,6 @@ const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance)
         : overtake === 'alta'
           ? 'Medio -> Blando'
           : 'Blando -> Medio'
-    : needsTwoStops
-      ? raceDistance === '50'
-        ? 'Medio -> Duro -> Blando'
-        : topFour
-          ? 'Medio -> Duro -> Medio'
-          : 'Medio -> Duro -> Medio'
       : topFour
         ? 'Medio -> Duro'
         : frontHalf
@@ -338,12 +360,12 @@ const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance)
             ? 'Duro -> Medio'
             : 'Medio -> Duro';
 
-  const primaryWindow = sprintish
-    ? pitWindow(raceLaps, 0.38, 0.52)
-    : needsTwoStops
+  const primaryWindow = needsTwoStops
       ? raceDistance === '50'
         ? `${pitWindow(raceLaps, profile.pitLoss === 'baja' ? 0.16 : 0.18, profile.pitLoss === 'baja' ? 0.24 : 0.26)} y ${pitWindow(raceLaps, 0.58, profile.trackPosition === 'alta' ? 0.66 : 0.72)}`
         : `${pitWindow(raceLaps, profile.pitLoss === 'baja' ? 0.2 : 0.22, profile.pitLoss === 'baja' ? 0.3 : 0.32)} y ${pitWindow(raceLaps, 0.58, profile.trackPosition === 'alta' ? 0.68 : 0.74)}`
+    : sprintish
+      ? pitWindow(raceLaps, 0.38, 0.52)
       : pitWindow(
           raceLaps,
           topFour ? (profile.undercut === 'alta' ? 0.4 : 0.42) : profile.undercut === 'alta' ? 0.35 : 0.38,
@@ -364,7 +386,9 @@ const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance)
   return {
     headline: `Plan base ${distanceLabel[raceDistance]} P${gridPosition} - ${primaryCompounds}`,
     summary:
-      sprintish
+      tyreRule?.minSets === 3
+        ? 'Estrategia condicionada por regla especial: hay que completar la carrera con tres juegos, aunque Monaco normalmente premie una parada.'
+        : sprintish
         ? 'Distancia corta: prioriza track position, salida agresiva y una sola parada limpia.'
         : needsTwoStops
           ? profile.pitLoss === 'baja'
@@ -379,6 +403,7 @@ const dryPlan = (track: Track, gridPosition: number, raceDistance: RaceDistance)
         items: [
           `Distancia estimada: ${raceLaps} vueltas (${distanceLabel[raceDistance]}).`,
           `Compuestos: ${primaryCompounds}.`,
+          ...(tyreRule ? [tyreRule.dryNote] : []),
           `Ventana principal: ${primaryWindow}.`,
           strategyReason(track, profile, needsTwoStops, raceDistance, pressureScore),
           `Lectura de parrilla: desde P${gridPosition}, ${undercutBias}.`,
@@ -407,11 +432,14 @@ const wetPlan = (track: Track, weather: WeatherMode, gridPosition: number, raceD
   const overtake = overtakeRating(track);
   const profile = getStrategyProfile(track);
   const cautious = gridPosition <= 6 || overtake === 'baja' || profile.trackPosition === 'alta';
+  const tyreRule = getTyreRule(track);
 
   return {
     headline: `Plan ${weather === 'wet' ? 'mojado fuerte' : 'intermedio'} ${distanceLabel[raceDistance]} P${gridPosition}`,
     summary:
-      weather === 'wet'
+      tyreRule?.minSets === 3
+        ? 'Lluvia con regla especial: prioriza el compuesto correcto, pero recuerda que Monaco exige tres juegos de neumaticos.'
+        : weather === 'wet'
         ? profile.wetVolatility === 'alta'
           ? 'La prioridad es sobrevivir a la fase de baja adherencia y clavar el cruce cuando la pista cambie de verdad.'
           : 'La prioridad es cruzar bien de full wet a intermedio o mantener temperatura si la pista no evoluciona.'
@@ -423,6 +451,7 @@ const wetPlan = (track: Track, weather: WeatherMode, gridPosition: number, raceD
         title: 'Base',
         items: [
           `Distancia estimada: ${raceLaps} vueltas (${distanceLabel[raceDistance]}).`,
+          ...(tyreRule ? [tyreRule.wetNote] : []),
           wetBaseCall(track, weather),
           cautious
             ? 'Desde delante o con poco adelantamiento, espera confirmacion clara antes de cruzar de compuesto.'
