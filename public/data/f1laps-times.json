@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-14T08:05:02.577Z",
+  "fetchedAt": "2026-05-15T08:19:12.714Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -69,16 +69,6 @@
     "suzuka": [
       {
         "rank": 1,
-        "time": "1:24.280",
-        "driver": "Ambrous",
-        "platform": "PS5",
-        "team": "McLaren",
-        "condition": "Time Trial seco - May 13, 2026",
-        "source": "F1Laps F1 25 leaderboard (japan), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/japan/",
-        "status": "verified"
-      },
-      {
-        "rank": 2,
         "time": "1:27.015",
         "driver": "itzyliaab",
         "platform": "PS5",
@@ -88,12 +78,22 @@
         "status": "verified"
       },
       {
-        "rank": 3,
+        "rank": 2,
         "time": "1:27.345",
         "driver": "woodbassniki",
         "platform": "PS5",
         "team": "Williams",
         "condition": "Time Trial seco - Apr 21, 2026",
+        "source": "F1Laps F1 25 leaderboard (japan), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/japan/",
+        "status": "verified"
+      },
+      {
+        "rank": 3,
+        "time": "1:27.470",
+        "driver": "Skylxrd",
+        "platform": "PS5",
+        "team": "Red Bull Racing",
+        "condition": "Time Trial seco - Mar 20, 2026",
         "source": "F1Laps F1 25 leaderboard (japan), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/japan/",
         "status": "verified"
       }
@@ -249,11 +249,11 @@
       },
       {
         "rank": 3,
-        "time": "1:10.509",
-        "driver": "Goughzi",
+        "time": "1:10.462",
+        "driver": "roesslucas",
         "platform": "PS5",
-        "team": "Haas F1 Team",
-        "condition": "Time Trial seco - Oct 21, 2025",
+        "team": "McLaren",
+        "condition": "Time Trial seco - May 14, 2026",
         "source": "F1Laps F1 25 leaderboard (monaco), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/monaco/",
         "status": "verified"
       }
@@ -313,11 +313,11 @@
       },
       {
         "rank": 3,
-        "time": "1:10.314",
-        "driver": "gdunks",
+        "time": "1:10.272",
+        "driver": "Riku",
         "platform": "PS5",
-        "team": "McLaren",
-        "condition": "Time Trial seco - Oct 18, 2025",
+        "team": "F1 Custom Team",
+        "condition": "Time Trial seco - May 15, 2026",
         "source": "F1Laps F1 25 leaderboard (canada), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/canada/",
         "status": "verified"
       }
@@ -453,6 +453,16 @@
     "zandvoort": [
       {
         "rank": 1,
+        "time": "1:08.142",
+        "driver": "mururoa27",
+        "platform": "PS5",
+        "team": "Ferrari",
+        "condition": "Time Trial seco - May 15, 2026",
+        "source": "F1Laps F1 25 leaderboard (netherlands), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/netherlands/",
+        "status": "verified"
+      },
+      {
+        "rank": 2,
         "time": "1:09.024",
         "driver": "Matex",
         "platform": "PS5",
@@ -462,22 +472,12 @@
         "status": "verified"
       },
       {
-        "rank": 2,
+        "rank": 3,
         "time": "1:09.500",
         "driver": "gdunks",
         "platform": "PS5",
         "team": "McLaren",
         "condition": "Time Trial seco - Oct 24, 2025",
-        "source": "F1Laps F1 25 leaderboard (netherlands), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/netherlands/",
-        "status": "verified"
-      },
-      {
-        "rank": 3,
-        "time": "1:09.541",
-        "driver": "mohamedviaam",
-        "platform": "PS5",
-        "team": "Ferrari",
-        "condition": "Time Trial seco - Dec 02, 2025",
         "source": "F1Laps F1 25 leaderboard (netherlands), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/netherlands/",
         "status": "verified"
       }
