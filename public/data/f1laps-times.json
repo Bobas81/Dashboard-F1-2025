@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-17T07:45:49.592Z",
+  "fetchedAt": "2026-05-18T08:54:49.147Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -377,11 +377,11 @@
       },
       {
         "rank": 3,
-        "time": "1:27.020",
-        "driver": "Vans-Racing",
+        "time": "1:26.942",
+        "driver": "Riku",
         "platform": "PS5",
-        "team": "Red Bull Racing",
-        "condition": "Time Trial seco - Aug 29, 2025",
+        "team": "F1 Custom Team",
+        "condition": "Time Trial seco - May 18, 2026",
         "source": "F1Laps F1 25 leaderboard (silverstone), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/silverstone/",
         "status": "verified"
       }
@@ -473,11 +473,11 @@
       },
       {
         "rank": 3,
-        "time": "1:09.541",
-        "driver": "mohamedviaam",
+        "time": "1:09.540",
+        "driver": "mururoa27",
         "platform": "PS5",
         "team": "Ferrari",
-        "condition": "Time Trial seco - Dec 02, 2025",
+        "condition": "Time Trial seco - May 18, 2026",
         "source": "F1Laps F1 25 leaderboard (netherlands), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/netherlands/",
         "status": "verified"
       }
