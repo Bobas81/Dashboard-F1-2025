@@ -701,6 +701,93 @@ const makeBrakingGuide = (track: Pick<Track, 'profile' | 'setupFamily'>, map: Tr
   });
 };
 
+const hasDistanceOrVisualReference = (reference: string) =>
+  /\d+\s*m/.test(reference.toLowerCase()) ||
+  [
+    'cartel',
+    'marca',
+    'muro',
+    'piano',
+    'pit entry',
+    'túnel',
+    'tunel',
+    'cresta',
+    'puente',
+    'grada',
+    'hotel',
+    'labio',
+    'drs',
+    'recta',
+  ].some((token) => reference.toLowerCase().includes(token));
+
+const approximateBrakePoint = (reference: string, family: Track['setupFamily']) => {
+  const text = reference.toLowerCase();
+
+  if (text.includes('fuerte') || text.includes('máxima') || text.includes('maxima')) {
+    return family === 'street' || family === 'power' ? '100 m aprox.' : '90 m aprox.';
+  }
+  if (text.includes('pronto') || text.includes('temprano')) {
+    return family === 'street' ? '120 m aprox.' : '100 m aprox.';
+  }
+  if (text.includes('suave') || text.includes('ligera') || text.includes('breve') || text.includes('corta')) {
+    return family === 'street' ? '75 m aprox.' : '60 m aprox.';
+  }
+  if (text.includes('toque') || text.includes('dab') || text.includes('trail') || text.includes('coast')) {
+    return '50 m aprox.';
+  }
+
+  return family === 'street' ? '80 m aprox.' : '70 m aprox.';
+};
+
+const normalizeBrakingReference = (entry: BrakingReference, family: Track['setupFamily']): BrakingReference => {
+  const reference = entry.reference.trim();
+  const text = reference.toLowerCase();
+
+  if (hasDistanceOrVisualReference(reference)) {
+    return entry;
+  }
+
+  if (text.includes('plano') || text.includes('sin frenar')) {
+    return {
+      ...entry,
+      reference: `${reference}; gira al inicio del piano`,
+    };
+  }
+
+  if (text.includes('sin pausa')) {
+    return {
+      ...entry,
+      reference: `${reference}; cambia al piano siguiente`,
+    };
+  }
+
+  if (text.includes('lift')) {
+    return {
+      ...entry,
+      reference: `${reference} al inicio del piano`,
+    };
+  }
+
+  if (
+    text.includes('fren') ||
+    text.includes('freno') ||
+    text.includes('toque') ||
+    text.includes('dab') ||
+    text.includes('trail') ||
+    text.includes('coast')
+  ) {
+    return {
+      ...entry,
+      reference: `${approximateBrakePoint(reference, family)} (${reference})`,
+    };
+  }
+
+  return {
+    ...entry,
+    reference: `inicio del piano de entrada (${reference})`,
+  };
+};
+
 const makeTrack = (
   id: TrackId,
   name: string,
@@ -739,9 +826,13 @@ const makeTrack = (
     engineer: curatedEngineerNotes[id] ?? notes,
   } satisfies Omit<Track, 'brakingGuide'>;
 
+  const brakingGuide = (curatedBrakingGuides[id] ?? makeBrakingGuide(baseTrack, baseTrack.map)).map((entry) =>
+    normalizeBrakingReference(entry, setupFamily),
+  );
+
   return {
     ...baseTrack,
-    brakingGuide: curatedBrakingGuides[id] ?? makeBrakingGuide(baseTrack, baseTrack.map),
+    brakingGuide,
   };
 };
 
