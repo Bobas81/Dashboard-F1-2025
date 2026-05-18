@@ -489,7 +489,7 @@ function App() {
                   -
                 </button>
                 <strong>P{gridPosition}</strong>
-                <button onClick={() => setGridPosition((current) => Math.min(20, current + 1))} aria-label="Subir posicion">
+                <button onClick={() => setGridPosition((current) => Math.min(22, current + 1))} aria-label="Subir posicion">
                   +
                 </button>
               </div>
