@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-21T08:44:00.065Z",
+  "fetchedAt": "2026-05-22T08:33:49.329Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -485,6 +485,16 @@
     "monza": [
       {
         "rank": 1,
+        "time": "1:18.759",
+        "driver": "Riku",
+        "platform": "PS5",
+        "team": "F1 Custom Team",
+        "condition": "Time Trial seco - May 22, 2026",
+        "source": "F1Laps F1 25 leaderboard (monza), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/monza/",
+        "status": "verified"
+      },
+      {
+        "rank": 2,
         "time": "1:18.908",
         "driver": "Ethan24",
         "platform": "PS5",
@@ -494,22 +504,12 @@
         "status": "verified"
       },
       {
-        "rank": 2,
+        "rank": 3,
         "time": "1:19.071",
         "driver": "leoelias0610",
         "platform": "PS5",
         "team": "Red Bull Racing",
         "condition": "Time Trial seco - Apr 09, 2026",
-        "source": "F1Laps F1 25 leaderboard (monza), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/monza/",
-        "status": "verified"
-      },
-      {
-        "rank": 3,
-        "time": "1:19.123",
-        "driver": "MichiWizard",
-        "platform": "PS5",
-        "team": "Kick Sauber",
-        "condition": "Time Trial seco - Sep 15, 2025",
         "source": "F1Laps F1 25 leaderboard (monza), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/monza/",
         "status": "verified"
       }
