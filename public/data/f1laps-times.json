@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-23T07:44:59.525Z",
+  "fetchedAt": "2026-05-24T08:01:54.507Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -591,21 +591,21 @@
       },
       {
         "rank": 2,
-        "time": "1:32.979",
-        "driver": "miqdadlilani",
+        "time": "1:32.824",
+        "driver": "Riku",
         "platform": "PS5",
-        "team": "Aston Martin",
-        "condition": "Time Trial seco - Feb 17, 2026",
+        "team": "F1 Custom Team",
+        "condition": "Time Trial seco - May 24, 2026",
         "source": "F1Laps F1 25 leaderboard (usa), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/usa/",
         "status": "verified"
       },
       {
         "rank": 3,
-        "time": "1:33.048",
-        "driver": "sbinottos",
+        "time": "1:32.979",
+        "driver": "miqdadlilani",
         "platform": "PS5",
-        "team": "Williams",
-        "condition": "Time Trial seco - Mar 29, 2026",
+        "team": "Aston Martin",
+        "condition": "Time Trial seco - Feb 17, 2026",
         "source": "F1Laps F1 25 leaderboard (usa), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/usa/",
         "status": "verified"
       }
