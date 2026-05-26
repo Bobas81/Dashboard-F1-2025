@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-24T08:01:54.507Z",
+  "fetchedAt": "2026-05-26T08:45:56.886Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -665,11 +665,11 @@
       },
       {
         "rank": 3,
-        "time": "1:08.328",
-        "driver": "shsnugget7",
+        "time": "1:08.308",
+        "driver": "Riku",
         "platform": "PS5",
-        "team": "Williams",
-        "condition": "Time Trial seco - Feb 23, 2026",
+        "team": "F1 Custom Team",
+        "condition": "Time Trial seco - May 26, 2026",
         "source": "F1Laps F1 25 leaderboard (brazil), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/brazil/",
         "status": "verified"
       }
@@ -719,21 +719,21 @@
       },
       {
         "rank": 2,
-        "time": "1:22.059",
-        "driver": "alexmoutondoc",
+        "time": "1:21.936",
+        "driver": "Riku",
         "platform": "PS5",
-        "team": "Williams",
-        "condition": "Time Trial seco - May 07, 2026",
+        "team": "F1 Custom Team",
+        "condition": "Time Trial seco - May 26, 2026",
         "source": "F1Laps F1 25 leaderboard (qatar), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/qatar/",
         "status": "verified"
       },
       {
         "rank": 3,
-        "time": "1:22.069",
-        "driver": "Riku",
+        "time": "1:22.059",
+        "driver": "alexmoutondoc",
         "platform": "PS5",
-        "team": "F1 Custom Team",
-        "condition": "Time Trial seco - Apr 21, 2026",
+        "team": "Williams",
+        "condition": "Time Trial seco - May 07, 2026",
         "source": "F1Laps F1 25 leaderboard (qatar), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/qatar/",
         "status": "verified"
       }
