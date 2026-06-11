@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-10T09:02:26.554Z",
+  "fetchedAt": "2026-06-11T09:46:54.296Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -613,16 +613,6 @@
     "mexico": [
       {
         "rank": 1,
-        "time": "1:15.360",
-        "driver": "germanhotdog123",
-        "platform": "PS5",
-        "team": "Red Bull Racing",
-        "condition": "Time Trial seco - Dec 18, 2025",
-        "source": "F1Laps F1 25 leaderboard (mexico), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/mexico/",
-        "status": "verified"
-      },
-      {
-        "rank": 2,
         "time": "1:15.668",
         "driver": "Phoenix90_",
         "platform": "PS5",
@@ -632,12 +622,22 @@
         "status": "verified"
       },
       {
-        "rank": 3,
+        "rank": 2,
         "time": "1:15.758",
         "driver": "Riku",
         "platform": "PS5",
         "team": "F1 Custom Team",
         "condition": "Time Trial seco - Apr 17, 2026",
+        "source": "F1Laps F1 25 leaderboard (mexico), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/mexico/",
+        "status": "verified"
+      },
+      {
+        "rank": 3,
+        "time": "1:15.802",
+        "driver": "gdunks",
+        "platform": "PS5",
+        "team": "McLaren",
+        "condition": "Time Trial seco - Oct 27, 2025",
         "source": "F1Laps F1 25 leaderboard (mexico), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/mexico/",
         "status": "verified"
       }
