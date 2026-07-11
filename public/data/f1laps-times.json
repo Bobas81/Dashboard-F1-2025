@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-10T08:44:30.433Z",
+  "fetchedAt": "2026-07-11T07:20:53.319Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -569,11 +569,11 @@
       },
       {
         "rank": 3,
-        "time": "1:29.276",
-        "driver": "lazr00",
+        "time": "1:29.242",
+        "driver": "Ethan24",
         "platform": "PS5",
-        "team": "Racing Bulls",
-        "condition": "Time Trial seco - Mar 15, 2026",
+        "team": "Ferrari",
+        "condition": "Time Trial seco - Jul 10, 2026",
         "source": "F1Laps F1 25 leaderboard (singapore), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/singapore/",
         "status": "verified"
       }
