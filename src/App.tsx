@@ -3,8 +3,8 @@ import { TrackMap } from './components/TrackMap';
 import { getEngineerRadioNotes } from './data/engineerRadio';
 import { getSetup } from './data/setups';
 import { getStrategyPlan } from './data/strategy';
-import { tracks } from './data/tracks';
-import type { GameLap, RaceDistance, SetupPreset, Track, WeatherMode } from './data/types';
+import { tracks2025, tracks2026 } from './data/tracks';
+import type { GameLap, RaceDistance, SeasonMode, SetupPreset, Track, WeatherMode } from './data/types';
 
 const weatherLabels: Record<WeatherMode, string> = {
   dry: 'Seco',
@@ -16,6 +16,30 @@ const raceDistanceLabels: Record<RaceDistance, string> = {
   '25': '25%',
   '50': '50%',
   '100': '100%',
+};
+
+const seasonLabels: Record<SeasonMode, string> = {
+  '2025': 'F1 2025',
+  '2026': 'F1 2026',
+};
+
+const tracksBySeason: Record<SeasonMode, Track[]> = {
+  '2025': tracks2025,
+  '2026': tracks2026,
+};
+
+const seasonChanges: Record<SeasonMode, string[]> = {
+  '2025': [
+    'Biblioteca base F1 25 con setups F1Laps de mayo de 2026.',
+    'Calendario completo 2025 del juego base.',
+    'ERS/DRS y comportamiento de coche anterior al pack 2026.',
+  ],
+  '2026': [
+    'Pack F1 25 2026: Audi y Cadillac, parrilla y pilotos actualizados.',
+    'Coches mas ligeros y pequenos, active aero y Overtake Mode.',
+    'MADRING anadido: Madrid, 5,4 km, solo con coches 2026.',
+    'Setups marcados como provisionales hasta datos reales del pack.',
+  ],
 };
 
 type SetupTabId = 'aero' | 'transmission' | 'geometry' | 'suspension' | 'brakes' | 'tyres';
@@ -328,7 +352,8 @@ const flagTextStyleFor = (country: string): React.CSSProperties => {
 };
 
 function App() {
-  const [trackId, setTrackId] = useState(tracks[0].id);
+  const [season, setSeason] = useState<SeasonMode>('2025');
+  const [trackId, setTrackId] = useState(tracksBySeason['2025'][0].id);
   const [weather, setWeather] = useState<WeatherMode>('dry');
   const [gridPosition, setGridPosition] = useState(10);
   const [raceDistance, setRaceDistance] = useState<RaceDistance>('50');
@@ -337,10 +362,17 @@ function App() {
   const [liveTimesStatus, setLiveTimesStatus] = useState<F1LapsStatus>('loading');
   const pickerRef = useRef<HTMLDivElement | null>(null);
 
+  const tracks = tracksBySeason[season];
   const track = tracks.find((item) => item.id === trackId) ?? tracks[0];
-  const setup = useMemo(() => getSetup(track, weather), [track, weather]);
+  const setup = useMemo(() => getSetup(track, weather, season), [track, weather, season]);
   const strategy = useMemo(() => getStrategyPlan(track, weather, gridPosition, raceDistance), [track, weather, gridPosition, raceDistance]);
-  const gameLaps = liveTimes?.tracks[track.id] ?? track.gameLaps;
+  const gameLaps = season === '2025' ? liveTimes?.tracks[track.id] ?? track.gameLaps : track.gameLaps;
+
+  useEffect(() => {
+    if (!tracks.some((item) => item.id === trackId)) {
+      setTrackId(tracks[0].id);
+    }
+  }, [trackId, tracks]);
 
   useEffect(() => {
     const element = pickerRef.current;
@@ -384,7 +416,7 @@ function App() {
     measureAndSet();
 
     return () => observer.disconnect();
-  }, []);
+  }, [tracks]);
 
   useEffect(() => {
     let cancelled = false;
@@ -420,6 +452,19 @@ function App() {
             {track.name}
           </h1>
           <p>{track.summary}</p>
+          <div className="season-row">
+            <div className="segmented season-toggle" aria-label="Temporada">
+              {(Object.keys(seasonLabels) as SeasonMode[]).map((mode) => (
+                <button key={mode} className={season === mode ? 'active' : ''} onClick={() => setSeason(mode)}>
+                  {seasonLabels[mode]}
+                </button>
+              ))}
+            </div>
+            <div className="season-note">
+              <strong>{season === '2026' ? 'Season Pack 2026' : 'Juego base 2025'}</strong>
+              <span>{season === '2026' ? 'Lanzamiento EA: 3 junio 2026' : 'Setups F1 25 actuales'}</span>
+            </div>
+          </div>
           <div
             className="track-picker"
             aria-label="Seleccion de circuito"
@@ -505,6 +550,7 @@ function App() {
               </div>
             </div>
           </section>
+          <SeasonChangesPanel season={season} />
           <SetupPanel setup={setup} weather={weather} compact />
           <EngineerSuitePanel
             track={track}
@@ -517,6 +563,19 @@ function App() {
         </aside>
       </section>
     </main>
+  );
+}
+
+function SeasonChangesPanel({ season }: { season: SeasonMode }) {
+  return (
+    <section className="panel season-panel">
+      <span className="eyebrow">Cambios de temporada</span>
+      <ul>
+        {seasonChanges[season].map((change) => (
+          <li key={change}>{change}</li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

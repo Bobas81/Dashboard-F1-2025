@@ -1,5 +1,5 @@
 import { curatedSetupLibrary, setupLibraryFetchedAt } from './setupLibrary';
-import type { SetupPreset, Track, WeatherMode } from './types';
+import type { SeasonMode, SetupPreset, Track, WeatherMode } from './types';
 
 const weatherNotes: Record<WeatherMode, string> = {
   dry: 'Seco: base de carrera+volante tomada de F1Laps. Mantiene compromiso de parc ferme sin cerrar demasiado la ventana de neumaticos.',
@@ -8,6 +8,42 @@ const weatherNotes: Record<WeatherMode, string> = {
 };
 
 const fetchedDate = new Intl.DateTimeFormat('es-ES', { dateStyle: 'medium' }).format(new Date(setupLibraryFetchedAt));
+
+const provisionalMadringSetup: Record<WeatherMode, SetupPreset> = {
+  dry: {
+    source: 'Base provisional 2026 desde perfiles street/balanced hasta datos F1Laps del pack',
+    sourceUrl: 'https://www.ea.com/en/games/f1/f1-25/news/f1-25-2026-season-pack-official-reveal',
+    notes: [],
+    aero: { frontWing: 28, rearWing: 24 },
+    transmission: { differentialOn: 75, differentialOff: 45, engineBraking: 60 },
+    suspensionGeometry: { frontCamber: -3.3, rearCamber: -1.8, frontToe: 0.03, rearToe: 0.14 },
+    suspension: { frontSuspension: 33, rearSuspension: 12, frontAntiRoll: 10, rearAntiRoll: 8, frontRideHeight: 24, rearRideHeight: 50 },
+    brakes: { pressure: 98, bias: 56 },
+    tyres: { frontLeft: 25.0, frontRight: 25.0, rearLeft: 22.4, rearRight: 22.4 },
+  },
+  intermediate: {
+    source: 'Base provisional 2026 desde perfiles street/balanced hasta datos F1Laps del pack',
+    sourceUrl: 'https://www.ea.com/en/games/f1/f1-25/news/f1-25-2026-season-pack-official-reveal',
+    notes: [],
+    aero: { frontWing: 31, rearWing: 28 },
+    transmission: { differentialOn: 70, differentialOff: 40, engineBraking: 60 },
+    suspensionGeometry: { frontCamber: -3.4, rearCamber: -1.9, frontToe: 0.02, rearToe: 0.13 },
+    suspension: { frontSuspension: 28, rearSuspension: 9, frontAntiRoll: 8, rearAntiRoll: 6, frontRideHeight: 25, rearRideHeight: 52 },
+    brakes: { pressure: 96, bias: 55 },
+    tyres: { frontLeft: 26.3, frontRight: 26.3, rearLeft: 23.5, rearRight: 23.5 },
+  },
+  wet: {
+    source: 'Base provisional 2026 desde perfiles street/balanced hasta datos F1Laps del pack',
+    sourceUrl: 'https://www.ea.com/en/games/f1/f1-25/news/f1-25-2026-season-pack-official-reveal',
+    notes: [],
+    aero: { frontWing: 35, rearWing: 33 },
+    transmission: { differentialOn: 65, differentialOff: 35, engineBraking: 60 },
+    suspensionGeometry: { frontCamber: -3.5, rearCamber: -2.0, frontToe: 0.01, rearToe: 0.12 },
+    suspension: { frontSuspension: 22, rearSuspension: 7, frontAntiRoll: 6, rearAntiRoll: 5, frontRideHeight: 27, rearRideHeight: 54 },
+    brakes: { pressure: 94, bias: 54 },
+    tyres: { frontLeft: 27.6, frontRight: 27.6, rearLeft: 24.6, rearRight: 24.6 },
+  },
+};
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 const snap = (value: number, step: number, min: number, max: number, digits = 0) => {
@@ -52,8 +88,42 @@ const normalizeSetupForGame = (preset: SetupPreset): SetupPreset => ({
   },
 });
 
-export const getSetup = (track: Track, weather: WeatherMode): SetupPreset => {
-  const preset = curatedSetupLibrary[track.id]?.[weather];
+const applySeason2026Model = (preset: SetupPreset, track: Track, weather: WeatherMode): SetupPreset => {
+  const isWet = weather !== 'dry';
+  const downforceBias = track.setupFamily === 'power' ? -2 : track.setupFamily === 'downforce' || track.setupFamily === 'street' ? 2 : 0;
+  const tractionBias = track.profile.traction >= 78 || track.setupFamily === 'street' ? -5 : 0;
+
+  return {
+    ...preset,
+    source: `${preset.source} + modelo provisional 2026`,
+    sourceUrl: preset.sourceUrl,
+    aero: {
+      frontWing: preset.aero.frontWing + downforceBias + (isWet ? 1 : 0),
+      rearWing: preset.aero.rearWing + downforceBias + (isWet ? 2 : 0),
+    },
+    transmission: {
+      ...preset.transmission,
+      differentialOn: preset.transmission.differentialOn + tractionBias - (isWet ? 5 : 0),
+      differentialOff: preset.transmission.differentialOff - 5,
+    },
+    suspension: {
+      frontSuspension: preset.suspension.frontSuspension - 4,
+      rearSuspension: preset.suspension.rearSuspension - 2,
+      frontAntiRoll: preset.suspension.frontAntiRoll - 2,
+      rearAntiRoll: preset.suspension.rearAntiRoll - 2,
+      frontRideHeight: preset.suspension.frontRideHeight + 1,
+      rearRideHeight: preset.suspension.rearRideHeight + 2,
+    },
+    brakes: {
+      pressure: preset.brakes.pressure - (isWet ? 2 : 1),
+      bias: preset.brakes.bias - 1,
+    },
+  };
+};
+
+export const getSetup = (track: Track, weather: WeatherMode, season: SeasonMode = '2025'): SetupPreset => {
+  const basePreset = curatedSetupLibrary[track.id]?.[weather] ?? (track.id === 'madring' ? provisionalMadringSetup[weather] : undefined);
+  const preset = season === '2026' && basePreset ? applySeason2026Model(basePreset, track, weather) : basePreset;
   if (!preset) {
     throw new Error(`No setup available for ${track.id} in ${weather}`);
   }
@@ -62,6 +132,9 @@ export const getSetup = (track: Track, weather: WeatherMode): SetupPreset => {
     ...preset,
     notes: [
       'Compromiso parc ferme: esta base prioriza una sola configuracion util para salida, stint largo y vuelta de qualy razonable.',
+      season === '2026'
+        ? 'Pack 2026: valores provisionales adaptados a coches mas ligeros, active aero, Overtake Mode y nueva entrega de potencia. Sustituir por datos F1Laps/EA cuando el pack este medido.'
+        : 'Temporada 2025: usa la biblioteca F1 25 validada antes del pack 2026.',
       weatherNotes[weather],
       `Fuente base: ${preset.source}. Biblioteca actualizada el ${fetchedDate}.`,
       `Volante: comprueba force feedback, bloqueo de freno y entrega de gas en ${track.shortName} antes de tocar ala o altura.`,

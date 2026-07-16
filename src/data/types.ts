@@ -1,5 +1,6 @@
 export type WeatherMode = 'dry' | 'intermediate' | 'wet';
 export type RaceDistance = '25' | '50' | '100';
+export type SeasonMode = '2025' | '2026';
 
 export type SessionMode = 'qualifying' | 'race';
 

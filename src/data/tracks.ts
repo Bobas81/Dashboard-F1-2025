@@ -574,6 +574,14 @@ const curatedEngineerNotes: Partial<Record<TrackId, EngineerNotes>> = {
     'T5/T6 y T9 son las zonas lógicas para adelantar.',
     'El error clásico es sobreconducir el peralte de T11 o la secuencia final y llegar sin salida a la recta principal.',
   ),
+  madring: makeEngineerNotes(
+    'T1, T7 y la ultima frenada son las referencias iniciales: empieza conservador hasta confirmar grip del trazado en el pack.',
+    'El tramo rapido necesita plataforma estable; la zona tecnica castiga un diferencial demasiado cerrado.',
+    'En 2026 el despliegue cambia: reserva Overtake Mode para las rectas y evita gastarlo en plena limitacion de traccion.',
+    'Al ser hibrido urbano/permanente, vigila traseras en salidas lentas y delanteras en cambios rapidos.',
+    'La recta principal y la frenada tras el sector rapido deberian ser los puntos naturales de ataque.',
+    'El error mas probable es montar un setup de mucha ala que parezca comodo pero te deje vendido al usar active aero en recta.',
+  ),
 };
 
 const angleDelta = (previous: TrackPoint, current: TrackPoint, next: TrackPoint) => {
@@ -821,8 +829,8 @@ const makeTrack = (
     sectorFocus,
     summary,
     map: makeMap(id, corners, drsZones),
-    records: sortRecords(realReferenceTimes[id] ?? pendingRecords(name)),
-    gameLaps: f1LapsGameTimes[id] ?? pendingGameLaps(name),
+    records: sortRecords((realReferenceTimes as Partial<Record<TrackId, LapRecord[]>>)[id] ?? pendingRecords(name)),
+    gameLaps: (f1LapsGameTimes as Partial<Record<TrackId, GameLap[]>>)[id] ?? pendingGameLaps(name),
     engineer: curatedEngineerNotes[id] ?? notes,
   } satisfies Omit<Track, 'brakingGuide'>;
 
@@ -836,7 +844,7 @@ const makeTrack = (
   };
 };
 
-export const tracks: Track[] = [
+const trackCatalog: Track[] = [
   makeTrack('melbourne', 'Melbourne Grand Prix Circuit', 'Australia', 'Australia', '🇦🇺', 5.278, 58, 16, 4, 'Media', 'balanced', { downforce: 68, tireStress: 58, braking: 66, traction: 62, curbUse: 74 }, ['Cambios rapidos', 'Traccion media', 'Salida a recta DRS'], 'Circuito fluido y sensible al ritmo: el coche debe rotar bien sin perder estabilidad en cambios de direccion.', makeEngineerNotes('Frena con margen en T1 y T3; el bloqueo delantero aparece si giras pronto.', 'T11-T12 decide gran parte de la vuelta, evita tocar demasiado piano interior.', 'Activa ERS fuerte al salir de la ultima curva y en la recta principal.', 'Delantero izquierdo sufre si atacas las enlazadas con volante cerrado.', 'T1 y T3 son los puntos naturales si sales pegado de la zona DRS.', 'Entrar demasiado rapido en T13 deja el coche sin apoyo para la salida.')),
   makeTrack('shanghai', 'Shanghai International Circuit', 'China', 'China', '🇨🇳', 5.451, 56, 16, 2, 'Alta', 'balanced', { downforce: 62, tireStress: 72, braking: 70, traction: 74, curbUse: 48 }, ['Espiral larga', 'Traccion lenta', 'Recta extrema'], 'Exige paciencia con acelerador y mucha traccion al final de curvas largas.', makeEngineerNotes('T1-T2 es una frenada en apoyo: reduce velocidad sin matar la rotacion.', 'T13 es la curva clave; salir mal arruina toda la recta trasera.', 'Guarda ERS para la recta larga y no lo vacies antes de la frenada de T14.', 'Traseras suben temperatura si abres gas antes de enderezar volante.', 'T14 es el adelantamiento principal con rebufo y DRS.', 'Sobreconducir la espiral degrada gomas y abre la trazada.')),
   makeTrack('suzuka', 'Suzuka Circuit', 'Japon', 'Japon', '🇯🇵', 5.807, 53, 18, 1, 'Extrema', 'technical', { downforce: 76, tireStress: 84, braking: 52, traction: 58, curbUse: 62 }, ['Eses', 'Degner/Spoon', '130R y chicane'], 'Circuito de precision: el volante debe ir suave y el setup no puede castigar el tren delantero.', makeEngineerNotes('Solo hay frenadas grandes en horquilla y chicane; lo demas es velocidad minima.', 'Las Eses premian levantar un poco antes antes que corregir tarde.', 'Usa ERS al salir de Spoon y hasta 130R, no en mitad de la secuencia inicial.', 'Carga lateral altisima; protege delanteras en tandas largas.', 'Chicane final si llegas con bateria y buen rebufo.', 'Atacar demasiado Degner 1 suele terminar en perdida de suelo o excursion.')),
@@ -861,4 +869,45 @@ export const tracks: Track[] = [
   makeTrack('vegas', 'Las Vegas Strip Circuit', 'Las Vegas', 'Estados Unidos', '🇺🇸', 6.201, 50, 17, 2, 'Alta', 'power', { downforce: 36, tireStress: 50, braking: 86, traction: 72, curbUse: 32 }, ['Rectas frias', 'Baja carga', 'Frenadas lentas'], 'Muchisima recta y baja temperatura: calentar gomas y frenar estable es clave.', makeEngineerNotes('Frenadas al final de recta son largas por baja carga y gomas frias.', 'Las curvas lentas no perdonan patinaje con volante aun abierto.', 'ERS en la Strip y para defender en rectas largas.', 'Presiones y warm-up importan mas que en otros circuitos.', 'Final de recta principal y horquillas lentas.', 'Llegar con gomas frias y frenar como en seco caliente bloquea facil.')),
   makeTrack('lusail', 'Lusail International Circuit', 'Qatar', 'Qatar', '🇶🇦', 5.419, 57, 16, 1, 'Alta', 'downforce', { downforce: 78, tireStress: 92, braking: 46, traction: 54, curbUse: 48 }, ['Curvas medias', 'Neumaticos', 'Recta meta'], 'Circuito abrasivo y rapido: cuidar neumaticos es rendimiento puro.', makeEngineerNotes('Hay pocas frenadas grandes; gestiona levantadas suaves y linea limpia.', 'Curvas largas encadenadas destruyen delanteras si giras de mas.', 'ERS en recta principal, no lo malgastes en curvas limitadas por apoyo.', 'Es de los circuitos mas duros para neumaticos: conduce redondo.', 'T1 con DRS es la opcion principal.', 'Forzar angulo de volante calienta gomas y pierde velocidad minima.')),
   makeTrack('yasmarina', 'Yas Marina Circuit', 'Abu Dhabi', 'Abu Dhabi', '🇦🇪', 5.281, 58, 16, 2, 'Media', 'balanced', { downforce: 60, tireStress: 62, braking: 78, traction: 76, curbUse: 44 }, ['Rectas', 'Sector tecnico', 'Traccion final'], 'Equilibrio entre rectas y traccion lenta; facil perder carrera por desgaste trasero.', makeEngineerNotes('T6 y T9 son las frenadas grandes; suelta freno antes de girar fuerte.', 'El ultimo sector necesita traccion y paciencia en pianos.', 'ERS en las dos rectas largas y para defender T6/T9.', 'Cuida traseras en aceleraciones lentas con deposito lleno.', 'T6 y T9 con DRS.', 'Entrar demasiado agresivo al ultimo sector destruye salidas.')),
+  makeTrack('madring', 'MADRING Circuit', 'Madrid', 'Espana', '🇪🇸', 5.4, 57, 22, 2, 'Alta', 'street', { downforce: 68, tireStress: 70, braking: 78, traction: 82, curbUse: 44 }, ['Sector rapido', 'Tramo tecnico', 'Traccion urbana'], 'Nuevo trazado hibrido de Madrid para el pack 2026: 5,4 km, curvas tecnicas y secciones rapidas para coches 2026.', makeEngineerNotes('Empieza con referencias amplias: el trazado del pack aun necesita telemetria real.', 'Las salidas lentas y los cambios rapidos deberian marcar el equilibrio del setup.', 'Usa Overtake Mode solo cuando el coche este recto y ya no limitado por traccion.', 'Gestiona traseras en la parte urbana; la vuelta larga puede calentar mucho si derrapas.', 'Recta principal y frenadas fuertes del sector final.', 'Perseguir demasiada rotacion puede dejar el coche nervioso con active aero abierto.')),
 ];
+
+const trackById = Object.fromEntries(trackCatalog.map((track) => [track.id, track])) as Record<string, Track>;
+
+const pickTracks = (ids: string[]) =>
+  ids.map((id) => {
+    const track = trackById[id];
+    if (!track) throw new Error(`Missing track definition for ${id}`);
+    return track;
+  });
+
+export const tracks2025: Track[] = trackCatalog.filter((track) => track.id !== 'madring');
+
+export const tracks2026: Track[] = pickTracks([
+  'melbourne',
+  'shanghai',
+  'suzuka',
+  'bahrain',
+  'jeddah',
+  'miami',
+  'montreal',
+  'monaco',
+  'catalunya',
+  'spielberg',
+  'silverstone',
+  'spa',
+  'hungaroring',
+  'zandvoort',
+  'monza',
+  'madring',
+  'baku',
+  'singapore',
+  'cota',
+  'mexico',
+  'interlagos',
+  'vegas',
+  'lusail',
+  'yasmarina',
+]);
+
+export const tracks = tracks2025;

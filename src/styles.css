@@ -81,6 +81,38 @@ button {
   line-height: 1.55;
 }
 
+.season-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 18px;
+}
+
+.season-toggle {
+  grid-template-columns: repeat(2, minmax(110px, 1fr));
+  width: min(280px, 100%);
+}
+
+.season-note {
+  display: grid;
+  gap: 2px;
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.season-note strong {
+  font-size: 0.82rem;
+}
+
+.season-note span {
+  color: #bdb5b1;
+  font-size: 0.78rem;
+}
+
 .track-picker {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -297,6 +329,20 @@ select {
 
 .race-controls .controls {
   grid-template-columns: 1fr;
+}
+
+.season-panel {
+  padding: 16px;
+}
+
+.season-panel ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+  color: #ddd6d2;
+  font-size: 0.88rem;
+  line-height: 1.35;
 }
 
 .bottom-grid {
