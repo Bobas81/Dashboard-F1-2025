@@ -17,7 +17,7 @@
 - Nueva versión o parche de F1 25: revisar rangos de setup, físicas y estrategia.
 - Cambio en F1Laps: validar que los scripts siguen interpretando correctamente sus páginas.
 - Actualización del Season Pack 2026: revisar todo el modelo 2026 y MADRING.
-- Cambio de calendario o trazado: actualizar catálogo, mapas, vueltas, DRS y referencias.
+- Cambio de calendario o trazado: actualizar catálogo, mapas, vueltas, DRS 2025, aerodinámica activa 2026 y referencias.
 
 ## Revisión trimestral
 

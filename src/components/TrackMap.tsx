@@ -1,70 +1,129 @@
-import type { Track } from '../data/types';
 import { circuitImages } from '../data/circuitImages';
+import { vectorTrackMaps, type VectorPoint } from '../data/vectorTrackMaps';
+import type { SeasonMode, Track } from '../data/types';
 
 interface Props {
   track: Track;
+  season: SeasonMode;
 }
 
-export function TrackMap({ track }: Props) {
-  const circuitImage = circuitImages[track.id];
-  const imageSrc = circuitImage?.src.startsWith('/')
+export function TrackMap({ track, season }: Props) {
+  if (season === '2026') {
+    const vectorMap = vectorTrackMaps[track.id];
+
+    if (!vectorMap) {
+      return (
+        <div className="track-stage track-stage-unavailable" role="status">
+          <strong>Mapa 2026 pendiente de validar</strong>
+          <span>No se muestra una geometria generada ni un circuito de sustitucion.</span>
+        </div>
+      );
+    }
+
+    const points = vectorMap.path.map(([x, y]: VectorPoint) => `${x},${y}`).join(' ');
+    const [sectorOne = 0, sectorTwo = 0] = vectorMap.sectorBreaks;
+    const sectors = sectorOne && sectorTwo
+      ? [
+          { start: 0, end: sectorOne, className: 'sector-one' },
+          { start: sectorOne, end: sectorTwo, className: 'sector-two' },
+          { start: sectorTwo, end: 100, className: 'sector-three' },
+        ]
+      : [];
+
+    return (
+      <figure className="track-map-figure">
+        <div className="track-stage vector-track-stage">
+          <svg
+            className="vector-track-map"
+            viewBox="0 0 1000 560"
+            role="img"
+            aria-label={`Mapa vectorial 2026 del circuito ${track.name}, con ${vectorMap.corners.length} curvas numeradas`}
+          >
+            <polyline className="vector-track-bed" points={points} />
+            {sectors.length > 0 ? (
+              sectors.map((sector) => (
+                <polyline
+                  key={sector.className}
+                  className={`vector-track-line ${sector.className}`}
+                  points={points}
+                  pathLength="100"
+                  strokeDasharray={`${sector.end - sector.start} ${100 - (sector.end - sector.start)}`}
+                  strokeDashoffset={-sector.start}
+                />
+              ))
+            ) : (
+              <polyline className="vector-track-line sector-provisional" points={points} />
+            )}
+            {vectorMap.corners.map((corner) => {
+              const [trackX, trackY] = corner.track;
+              const [textX, textY] = corner.text;
+
+              return (
+                <g className="vector-corner" key={corner.label}>
+                  <line x1={trackX} y1={trackY} x2={textX} y2={textY} />
+                  <circle cx={textX} cy={textY} r="14" />
+                  <text x={textX} y={textY}>{corner.label}</text>
+                </g>
+              );
+            })}
+          </svg>
+          <div className="vector-sector-key" aria-label="Colores de los sectores">
+            {sectors.length > 0 ? (
+              <>
+                <span className="sector-one">S1</span>
+                <span className="sector-two">S2</span>
+                <span className="sector-three">S3</span>
+              </>
+            ) : (
+              <span className="sector-provisional">Sectores pendientes</span>
+            )}
+          </div>
+        </div>
+        <figcaption>
+          Geometria y curvas:{' '}
+          <a href={vectorMap.sourceUrl} target="_blank" rel="noreferrer">
+            {vectorMap.sourceName}
+          </a>
+          {track.id === 'madring' ? ' · Trazado 2026 provisional hasta su primera sesion oficial' : ''}
+        </figcaption>
+      </figure>
+    );
+  }
+
+  const circuitImage = circuitImages[season][track.id];
+
+  if (!circuitImage) {
+    return (
+      <div className="track-stage track-stage-unavailable" role="status">
+        <strong>Mapa {season} pendiente de validar</strong>
+        <span>No se muestra una geometria generada ni un circuito de sustitucion.</span>
+      </div>
+    );
+  }
+
+  const imageSrc = circuitImage.src.startsWith('/')
     ? `${import.meta.env.BASE_URL}${circuitImage.src.slice(1)}`
-    : circuitImage?.src;
+    : circuitImage.src;
 
   return (
-    <div className="track-stage">
-      {circuitImage ? (
-        <>
-          <img className={circuitImage.fit === 'cover-top' ? 'lebalap-map map-cover-top' : 'lebalap-map'} src={imageSrc} alt={`Mapa del circuito ${track.name}`} />
-        </>
-      ) : (
-        <>
-          <svg viewBox={track.map.viewBox} role="img" aria-label={`Mapa del circuito ${track.name}`}>
-            <defs>
-              <filter id="track-glow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="5" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
-            <path className="track-shadow" d={track.map.path} />
-            <path className="track-base" d={track.map.path} />
-            <path className="track-sector sector-one" d={track.map.path} pathLength="100" />
-            <path className="track-sector sector-two" d={track.map.path} pathLength="100" />
-            <path className="track-sector sector-three" d={track.map.path} pathLength="100" />
-            {track.map.drs.map((drs) => (
-              <g key={drs.label}>
-                <line className="drs-line" x1={drs.x1} y1={drs.y1} x2={drs.x2} y2={drs.y2} />
-                <text className="drs-label" x={(drs.x1 + drs.x2) / 2} y={(drs.y1 + drs.y2) / 2 - 10}>
-                  {drs.label}
-                </text>
-              </g>
-            ))}
-            {track.map.corners.map((corner) => (
-              <g key={corner.label}>
-                <circle className="corner-dot" cx={corner.x} cy={corner.y} r="12" />
-                <text className="corner-label" x={corner.x} y={corner.y + 4}>
-                  {corner.label}
-                </text>
-              </g>
-            ))}
-            <g>
-              <circle className="speed-dot" cx={track.map.speedTrap.x} cy={track.map.speedTrap.y} r="10" />
-              <text className="speed-label" x={track.map.speedTrap.x + 16} y={track.map.speedTrap.y + 5}>
-                SPEED TRAP
-              </text>
-            </g>
-            <g>
-              <rect className="start-box" x={track.map.start.x - 18} y={track.map.start.y - 18} width="36" height="36" rx="4" />
-              <text className="start-text" x={track.map.start.x} y={track.map.start.y + 5}>
-                S/F
-              </text>
-            </g>
-          </svg>
-        </>
-      )}
-    </div>
+    <figure className="track-map-figure">
+      <div className="track-stage">
+        <img
+          className={circuitImage.fit === 'cover-top' ? 'lebalap-map map-cover-top' : 'lebalap-map'}
+          src={imageSrc}
+          alt={`Mapa ${season} del circuito ${track.name}, con ${track.corners} curvas numeradas`}
+        />
+      </div>
+      <figcaption>
+        Fuente cartografica:{' '}
+        {circuitImage.sourceUrl ? (
+          <a href={circuitImage.sourceUrl} target="_blank" rel="noreferrer">
+            {circuitImage.source}
+          </a>
+        ) : (
+          circuitImage.source
+        )}
+      </figcaption>
+    </figure>
   );
 }

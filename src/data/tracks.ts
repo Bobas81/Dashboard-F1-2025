@@ -1,6 +1,6 @@
 import { realTrackShapes } from './realTrackShapes';
 import { f1LapsGameTimes, realReferenceTimes } from './times';
-import type { BrakingReference, EngineerNotes, GameLap, LapRecord, Track, TrackMap, TrackPoint } from './types';
+import type { BrakingReference, EngineerNotes, GameLap, LapRecord, Track, TrackMap } from './types';
 
 const pendingRecords = (track: string): LapRecord[] =>
   ([1, 2, 3] as const).map((rank) => ({
@@ -73,24 +73,23 @@ const makeEngineerNotes = (
 const shapes = realTrackShapes;
 type TrackId = keyof typeof shapes;
 
-// Curated from OverTake's F1 25 track guides for circuits with reliable turn-by-turn references.
+// Curated from specialist F1 game guides (OverTake and SimRacingSetup) with reliable turn-by-turn references.
 const curatedBrakingGuides: Partial<Record<TrackId, BrakingReference[]>> = {
   melbourne: [
     { corner: 'T1', reference: '100 m', gear: '5', note: 'Entra desde la izquierda, toca piano interior y prioriza la salida.' },
-    { corner: 'T2', reference: 'sin frenar', gear: '6', note: 'Mantente limpio en la salida para preparar la frenada de T3.' },
-    { corner: 'T3', reference: '100 m', gear: '3', note: 'Es la horquilla lenta; no abras gas pronto o patina el eje trasero.' },
-    { corner: 'T4', reference: 'toque de freno', gear: '3', note: 'Recorta un poco el piano interior para enderezar el coche hacia T5.' },
-    { corner: 'T5', reference: 'plano', gear: '6', note: 'Llega bien colocado desde T4; un volante brusco te quita apoyo.' },
-    { corner: 'T6', reference: 'frenada suave', gear: '4', note: 'Curva de confianza; no te pases porque la salida se cierra.' },
-    { corner: 'T7', reference: 'plano', gear: '7', note: 'Tras el reprofilado se hace a fondo si el coche esta estable.' },
-    { corner: 'T8', reference: 'plano', gear: '7', note: 'Mantén el coche suelto y no pelees con el volante.' },
-    { corner: 'T9', reference: '50 m', gear: '6', note: 'Cancela el DRS justo antes, monta piano con decisión y cambia rápido de apoyo.' },
-    { corner: 'T10', reference: 'sin frenar', gear: '6', note: 'Segundo cambio de dirección del complejo rápido; precisión antes que agresividad.' },
-    { corner: 'T11', reference: 'frenada suave', gear: '4', note: 'Noventa grados importante para la siguiente zona DRS; salida limpia.' },
-    { corner: 'T12', reference: 'frena pronto', gear: '3', note: 'Es fácil irte largo cuesta abajo; paciencia con el gas en el vértice.' },
-    { corner: 'T13', reference: 'frenada fuerte', gear: '2', note: 'Prioriza rotación y no abuses del piano interior si el coche rebota.' },
-    { corner: 'T14', reference: 'ligero lift', gear: '4', note: 'Mantente pegado dentro para alinear T15.' },
-    { corner: 'T15', reference: 'sin pausa tras T14', gear: '3', note: 'Última salida crítica; abre gas pronto para lanzar el coche a meta.' },
+    { corner: 'T2', reference: 'sin frenar', gear: '7', note: 'Mantente limpio en la salida para preparar la frenada fuerte de T3.' },
+    { corner: 'T3', reference: '100 m', gear: '2', note: 'Frena recto y retrasa el gas para no perder tracción en la salida.' },
+    { corner: 'T4', reference: 'lift o toque de freno', gear: '4', note: 'Usa el piano interior sin descolocar el coche hacia T5.' },
+    { corner: 'T5', reference: 'plano', gear: '7', note: 'Línea limpia y volante suave para conservar velocidad.' },
+    { corner: 'T6', reference: 'frenada tardía', gear: '4', note: 'No cierres demasiado la entrada: necesitas colocar el coche para T7.' },
+    { corner: 'T7', reference: 'continuación de T6', gear: '5', note: 'Abre la dirección pronto y prioriza la aceleración.' },
+    { corner: 'T8', reference: 'plano', gear: '7', note: 'Kink de alta velocidad; evita correcciones innecesarias.' },
+    { corner: 'T9', reference: 'lift o freno breve', gear: '6', note: 'Primer apoyo de la chicane rápida; entra estable y monta el piano con precisión.' },
+    { corner: 'T10', reference: 'sin frenar', gear: '6', note: 'Segundo apoyo de la chicane; deja correr el coche en la salida.' },
+    { corner: 'T11', reference: 'freno breve', gear: '6', note: 'Primer cambio de apoyo de alta velocidad; la confianza depende del balance.' },
+    { corner: 'T12', reference: 'sin frenar', gear: '6', note: 'Completa la chicane sin exceder el piano y prepara la frenada de T13.' },
+    { corner: 'T13', reference: 'frena antes por los baches', gear: '3', note: 'La superficie puede desestabilizar el coche; prioriza una entrada controlada.' },
+    { corner: 'T14', reference: 'frenada corta', gear: '3', note: 'Última curva: sacrifica entrada para acelerar pronto hacia meta.' },
   ],
   bahrain: [
     { corner: 'T1', reference: 'justo después de 100 m', gear: '2', note: 'Frena recto y no montes demasiado el piano interior.' },
@@ -383,12 +382,12 @@ const curatedBrakingGuides: Partial<Record<TrackId, BrakingReference[]>> = {
 
 const curatedEngineerNotes: Partial<Record<TrackId, EngineerNotes>> = {
   melbourne: makeEngineerNotes(
-    'T1 y T3 usan 100 m como referencia clara; en T9-T10 la frenada cae al 50 m y exige precisión.',
-    'T9-T10 y la salida de T11-T12 condicionan buena parte de la velocidad punta en las dos zonas DRS.',
-    'Gasta ERS al salir de T15 y protege batería para el segundo y tercer sector, donde hay recta real para convertirla.',
+    'T1 y T3 usan 100 m como referencia clara; T9-T10 y T11-T12 se resuelven con apoyos precisos y frenadas breves.',
+    'T9-T10 y T11-T12 son las dos chicanes rápidas que más dependen de un coche estable y una línea limpia.',
+    'Gasta ERS al salir de T14 y protege batería para los tramos donde el coche ya no está limitado por apoyo.',
     'Las traseras se encienden rápido en T3 y T13 si pides gas con volante todavía cruzado.',
     'T1 y T3 son los puntos más limpios si llegas bien colocado en DRS.',
-    'Entrar brusco en T4-T5 o pasarte en T12 rompe completamente el ritmo del tercer sector.',
+    'Entrar brusco en T4-T5 o perder la línea en T12 rompe completamente el ritmo del último sector.',
   ),
   bahrain: makeEngineerNotes(
     'T1, T4, T8 y T14 tienen referencia sólida en 100 m; T9-T10 requiere frenar antes de lo que pide la vista.',
@@ -584,85 +583,12 @@ const curatedEngineerNotes: Partial<Record<TrackId, EngineerNotes>> = {
   ),
 };
 
-const angleDelta = (previous: TrackPoint, current: TrackPoint, next: TrackPoint) => {
-  const incoming = Math.atan2(current.y - previous.y, current.x - previous.x);
-  const outgoing = Math.atan2(next.y - current.y, next.x - current.x);
-  let delta = Math.abs(outgoing - incoming);
-  if (delta > Math.PI) delta = Math.PI * 2 - delta;
-  return delta;
-};
-
-const makeMap = (shapeId: keyof typeof shapes, corners: number, drsZones: number): TrackMap => {
+const makeMap = (shapeId: keyof typeof shapes, corners: number): TrackMap => {
   const shape = shapes[shapeId];
-  const closedPoints = [...shape.points, shape.points[0]];
-  const segmentLengths = closedPoints.slice(0, -1).map((point, index) => {
-    const next = closedPoints[index + 1];
-    return Math.hypot(next.x - point.x, next.y - point.y);
-  });
-  const totalLength = segmentLengths.reduce((sum, length) => sum + length, 0);
-
-  const pointAt = (progress: number): TrackPoint => {
-    let distance = progress * totalLength;
-
-    for (let index = 0; index < segmentLengths.length; index += 1) {
-      const segment = segmentLengths[index];
-      if (distance <= segment) {
-        const start = closedPoints[index];
-        const end = closedPoints[index + 1];
-        const ratio = segment === 0 ? 0 : distance / segment;
-        return {
-          x: Math.round(start.x + (end.x - start.x) * ratio),
-          y: Math.round(start.y + (end.y - start.y) * ratio),
-        };
-      }
-      distance -= segment;
-    }
-
-    return shape.points[0];
-  };
-
-  const cornerCandidates = shape.points
-    .slice(1, -1)
-    .map((point, index) => {
-      const realIndex = index + 1;
-      const previous = shape.points[Math.max(realIndex - 4, 0)];
-      const next = shape.points[Math.min(realIndex + 4, shape.points.length - 1)];
-      const progress = realIndex / shape.points.length;
-      return { point, progress, score: angleDelta(previous, point, next) };
-    })
-    .filter((candidate) => candidate.score > 0.16)
-    .sort((a, b) => b.score - a.score);
-
-  const clustered: typeof cornerCandidates = [];
-  for (const candidate of cornerCandidates) {
-    if (clustered.every((corner) => Math.abs(corner.progress - candidate.progress) > 0.025)) {
-      clustered.push(candidate);
-    }
-    if (clustered.length >= corners) break;
-  }
-
-  const selected = clustered
-    .sort((a, b) => a.progress - b.progress)
-    .map((candidate, index) => ({ ...candidate.point, label: String(index + 1).padStart(2, '0') }));
-
-  while (selected.length < corners) {
-    const point = pointAt(selected.length / corners);
-    selected.push({ ...point, label: String(selected.length + 1).padStart(2, '0') });
-  }
 
   return {
-    viewBox: '0 0 700 430',
-    path: `M ${shape.points.map((point) => `${point.x} ${point.y}`).join(' L ')} Z`,
     sourceName: shape.sourceName,
-    start: shape.points[0],
-    corners: selected,
-    drs: Array.from({ length: drsZones }, (_, index) => {
-      const progress = [0.1, 0.42, 0.68, 0.84][index] ?? index / Math.max(drsZones, 1);
-      const start = pointAt(progress);
-      const end = pointAt(Math.min(progress + 0.08, 0.98));
-      return { x1: start.x, y1: start.y, x2: end.x, y2: end.y, label: `DRS ${index + 1}` };
-    }),
-    speedTrap: pointAt(0.62),
+    corners: Array.from({ length: corners }, (_, index) => ({ label: String(index + 1).padStart(2, '0') })),
   };
 };
 
@@ -822,13 +748,16 @@ const makeTrack = (
     lengthKm,
     laps,
     corners,
-    drsZones,
+    aero: {
+      '2025': { kind: 'drs', zones: drsZones },
+      '2026': { kind: 'active-aero' },
+    },
     difficulty,
     setupFamily,
     profile,
     sectorFocus,
     summary,
-    map: makeMap(id, corners, drsZones),
+    map: makeMap(id, corners),
     records: sortRecords((realReferenceTimes as Partial<Record<TrackId, LapRecord[]>>)[id] ?? pendingRecords(name)),
     gameLaps: (f1LapsGameTimes as Partial<Record<TrackId, GameLap[]>>)[id] ?? pendingGameLaps(name),
     engineer: curatedEngineerNotes[id] ?? notes,
@@ -845,7 +774,7 @@ const makeTrack = (
 };
 
 const trackCatalog: Track[] = [
-  makeTrack('melbourne', 'Melbourne Grand Prix Circuit', 'Australia', 'Australia', '🇦🇺', 5.278, 58, 16, 4, 'Media', 'balanced', { downforce: 68, tireStress: 58, braking: 66, traction: 62, curbUse: 74 }, ['Cambios rapidos', 'Traccion media', 'Salida a recta DRS'], 'Circuito fluido y sensible al ritmo: el coche debe rotar bien sin perder estabilidad en cambios de direccion.', makeEngineerNotes('Frena con margen en T1 y T3; el bloqueo delantero aparece si giras pronto.', 'T11-T12 decide gran parte de la vuelta, evita tocar demasiado piano interior.', 'Activa ERS fuerte al salir de la ultima curva y en la recta principal.', 'Delantero izquierdo sufre si atacas las enlazadas con volante cerrado.', 'T1 y T3 son los puntos naturales si sales pegado de la zona DRS.', 'Entrar demasiado rapido en T13 deja el coche sin apoyo para la salida.')),
+  makeTrack('melbourne', 'Albert Park Circuit', 'Australia', 'Australia', '🇦🇺', 5.278, 58, 14, 4, 'Media', 'balanced', { downforce: 68, tireStress: 58, braking: 66, traction: 62, curbUse: 74 }, ['Cambios rapidos', 'Traccion media', 'Salida a recta DRS'], 'Circuito fluido y sensible al ritmo: el coche debe rotar bien sin perder estabilidad en cambios de direccion.', makeEngineerNotes('Frena con margen en T1 y T3; el bloqueo delantero aparece si giras pronto.', 'T11-T12 decide gran parte de la vuelta, evita tocar demasiado piano interior.', 'Activa ERS fuerte al salir de la ultima curva y en la recta principal.', 'Delantero izquierdo sufre si atacas las enlazadas con volante cerrado.', 'T1 y T3 son los puntos naturales si sales pegado de la zona DRS.', 'Entrar demasiado rapido en T13 deja el coche sin apoyo para la salida.')),
   makeTrack('shanghai', 'Shanghai International Circuit', 'China', 'China', '🇨🇳', 5.451, 56, 16, 2, 'Alta', 'balanced', { downforce: 62, tireStress: 72, braking: 70, traction: 74, curbUse: 48 }, ['Espiral larga', 'Traccion lenta', 'Recta extrema'], 'Exige paciencia con acelerador y mucha traccion al final de curvas largas.', makeEngineerNotes('T1-T2 es una frenada en apoyo: reduce velocidad sin matar la rotacion.', 'T13 es la curva clave; salir mal arruina toda la recta trasera.', 'Guarda ERS para la recta larga y no lo vacies antes de la frenada de T14.', 'Traseras suben temperatura si abres gas antes de enderezar volante.', 'T14 es el adelantamiento principal con rebufo y DRS.', 'Sobreconducir la espiral degrada gomas y abre la trazada.')),
   makeTrack('suzuka', 'Suzuka Circuit', 'Japon', 'Japon', '🇯🇵', 5.807, 53, 18, 1, 'Extrema', 'technical', { downforce: 76, tireStress: 84, braking: 52, traction: 58, curbUse: 62 }, ['Eses', 'Degner/Spoon', '130R y chicane'], 'Circuito de precision: el volante debe ir suave y el setup no puede castigar el tren delantero.', makeEngineerNotes('Solo hay frenadas grandes en horquilla y chicane; lo demas es velocidad minima.', 'Las Eses premian levantar un poco antes antes que corregir tarde.', 'Usa ERS al salir de Spoon y hasta 130R, no en mitad de la secuencia inicial.', 'Carga lateral altisima; protege delanteras en tandas largas.', 'Chicane final si llegas con bateria y buen rebufo.', 'Atacar demasiado Degner 1 suele terminar en perdida de suelo o excursion.')),
   makeTrack('bahrain', 'Bahrain International Circuit', 'Bahrain', 'Bahrain', '🇧🇭', 5.412, 57, 15, 3, 'Alta', 'power', { downforce: 54, tireStress: 78, braking: 86, traction: 82, curbUse: 42 }, ['Frenadas fuertes', 'Traccion T10', 'Gestion trasera'], 'Stop-and-go con mucha traccion; el parc ferme debe favorecer estabilidad con combustible.', makeEngineerNotes('T1, T4 y T10 son las referencias: frena recto y baja presion al girar.', 'T10 bloquea facil la delantera izquierda si entras con demasiado angulo.', 'Despliega ERS saliendo de T10 y en recta principal.', 'Traseras son la vida de la carrera; no patines en segunda marcha.', 'T1 y T4 con DRS son oportunidades claras.', 'Subvirar en T11 por entrar pasado destruye la salida de sector.')),
@@ -869,7 +798,7 @@ const trackCatalog: Track[] = [
   makeTrack('vegas', 'Las Vegas Strip Circuit', 'Las Vegas', 'Estados Unidos', '🇺🇸', 6.201, 50, 17, 2, 'Alta', 'power', { downforce: 36, tireStress: 50, braking: 86, traction: 72, curbUse: 32 }, ['Rectas frias', 'Baja carga', 'Frenadas lentas'], 'Muchisima recta y baja temperatura: calentar gomas y frenar estable es clave.', makeEngineerNotes('Frenadas al final de recta son largas por baja carga y gomas frias.', 'Las curvas lentas no perdonan patinaje con volante aun abierto.', 'ERS en la Strip y para defender en rectas largas.', 'Presiones y warm-up importan mas que en otros circuitos.', 'Final de recta principal y horquillas lentas.', 'Llegar con gomas frias y frenar como en seco caliente bloquea facil.')),
   makeTrack('lusail', 'Lusail International Circuit', 'Qatar', 'Qatar', '🇶🇦', 5.419, 57, 16, 1, 'Alta', 'downforce', { downforce: 78, tireStress: 92, braking: 46, traction: 54, curbUse: 48 }, ['Curvas medias', 'Neumaticos', 'Recta meta'], 'Circuito abrasivo y rapido: cuidar neumaticos es rendimiento puro.', makeEngineerNotes('Hay pocas frenadas grandes; gestiona levantadas suaves y linea limpia.', 'Curvas largas encadenadas destruyen delanteras si giras de mas.', 'ERS en recta principal, no lo malgastes en curvas limitadas por apoyo.', 'Es de los circuitos mas duros para neumaticos: conduce redondo.', 'T1 con DRS es la opcion principal.', 'Forzar angulo de volante calienta gomas y pierde velocidad minima.')),
   makeTrack('yasmarina', 'Yas Marina Circuit', 'Abu Dhabi', 'Abu Dhabi', '🇦🇪', 5.281, 58, 16, 2, 'Media', 'balanced', { downforce: 60, tireStress: 62, braking: 78, traction: 76, curbUse: 44 }, ['Rectas', 'Sector tecnico', 'Traccion final'], 'Equilibrio entre rectas y traccion lenta; facil perder carrera por desgaste trasero.', makeEngineerNotes('T6 y T9 son las frenadas grandes; suelta freno antes de girar fuerte.', 'El ultimo sector necesita traccion y paciencia en pianos.', 'ERS en las dos rectas largas y para defender T6/T9.', 'Cuida traseras en aceleraciones lentas con deposito lleno.', 'T6 y T9 con DRS.', 'Entrar demasiado agresivo al ultimo sector destruye salidas.')),
-  makeTrack('madring', 'MADRING Circuit', 'Madrid', 'Espana', '🇪🇸', 5.4, 57, 22, 2, 'Alta', 'street', { downforce: 68, tireStress: 70, braking: 78, traction: 82, curbUse: 44 }, ['Sector rapido', 'Tramo tecnico', 'Traccion urbana'], 'Nuevo trazado hibrido de Madrid para el pack 2026: 5,4 km, curvas tecnicas y secciones rapidas para coches 2026.', makeEngineerNotes('Empieza con referencias amplias: el trazado del pack aun necesita telemetria real.', 'Las salidas lentas y los cambios rapidos deberian marcar el equilibrio del setup.', 'Usa Overtake Mode solo cuando el coche este recto y ya no limitado por traccion.', 'Gestiona traseras en la parte urbana; la vuelta larga puede calentar mucho si derrapas.', 'Recta principal y frenadas fuertes del sector final.', 'Perseguir demasiada rotacion puede dejar el coche nervioso con active aero abierto.')),
+  makeTrack('madring', 'MADRING Circuit', 'Madrid', 'Espana', '🇪🇸', 5.416, 57, 22, 2, 'Alta', 'street', { downforce: 68, tireStress: 70, braking: 78, traction: 82, curbUse: 44 }, ['Sector rapido', 'Tramo tecnico', 'Traccion urbana'], 'Nuevo trazado hibrido de Madrid para el pack 2026: 5,416 km, curvas tecnicas y secciones rapidas para coches 2026.', makeEngineerNotes('Empieza con referencias amplias: el trazado del pack aun necesita telemetria real.', 'Las salidas lentas y los cambios rapidos deberian marcar el equilibrio del setup.', 'Usa Overtake Mode solo cuando el coche este recto y ya no limitado por traccion.', 'Gestiona traseras en la parte urbana; la vuelta larga puede calentar mucho si derrapas.', 'Recta principal y frenadas fuertes del sector final.', 'Perseguir demasiada rotacion puede dejar el coche nervioso con active aero abierto.')),
 ];
 
 const trackById = Object.fromEntries(trackCatalog.map((track) => [track.id, track])) as Record<string, Track>;

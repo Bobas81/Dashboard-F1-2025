@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { TrackMap } from './components/TrackMap';
 import { getEngineerRadioNotes } from './data/engineerRadio';
+import { adaptTextForSeason } from './data/season';
 import { getSetup } from './data/setups';
 import { getStrategyPlan } from './data/strategy';
 import { tracks2025, tracks2026 } from './data/tracks';
@@ -36,8 +37,9 @@ const seasonChanges: Record<SeasonMode, string[]> = {
   ],
   '2026': [
     'Pack F1 25 2026: Audi y Cadillac, parrilla y pilotos actualizados.',
-    'Coches mas ligeros y pequenos, active aero y Overtake Mode.',
-    'MADRING anadido: Madrid, 5,4 km, solo con coches 2026.',
+    'DRS eliminado: aerodinamica activa, Straight Mode y Overtake Mode.',
+    'Coches mas ligeros y pequenos con alas delantera y trasera activas.',
+    'MADRING anadido: Madrid, 5,416 km, solo con coches 2026.',
     'Setups marcados como provisionales hasta datos reales del pack.',
   ],
 };
@@ -364,6 +366,7 @@ function App() {
 
   const tracks = tracksBySeason[season];
   const track = tracks.find((item) => item.id === trackId) ?? tracks[0];
+  const activeAero = track.aero[season];
   const setup = useMemo(() => getSetup(track, weather, season), [track, weather, season]);
   const strategy = useMemo(() => getStrategyPlan(track, weather, gridPosition, raceDistance), [track, weather, gridPosition, raceDistance]);
   const gameLaps = season === '2025' ? liveTimes?.tracks[track.id] ?? track.gameLaps : track.gameLaps;
@@ -476,6 +479,7 @@ function App() {
                 key={item.id}
                 className={trackId === item.id ? 'active' : ''}
                 onClick={() => setTrackId(item.id)}
+                aria-label={`${item.country}: ${item.shortName}`}
                 style={flagTextStyleFor(item.country)}
               >
                 <span className="track-picker-name">{item.country}</span>
@@ -495,24 +499,24 @@ function App() {
               </div>
               <div className="badge-row">
                 <span>{track.corners} curvas</span>
-                <span>{track.drsZones} DRS</span>
+                <span>{activeAero.kind === 'drs' ? `${activeAero.zones} DRS` : 'Aero activa'}</span>
                 <span>{track.difficulty}</span>
               </div>
             </div>
-            <TrackMap track={track} />
+            <TrackMap track={track} season={season} />
             <div className="sector-strip">
               {track.sectorFocus.map((sector, index) => (
                 <div key={sector}>
                   <strong>S{index + 1}</strong>
-                  <span>{sector}</span>
+                  <span>{adaptTextForSeason(sector, season)}</span>
                 </div>
               ))}
             </div>
-            <BrakingGuide track={track} />
+            <BrakingGuide track={track} season={season} />
           </section>
 
           <section className="bottom-grid">
-            <TimesPanel track={track} gameLaps={gameLaps} fetchedAt={liveTimes?.fetchedAt} status={liveTimesStatus} />
+            <TimesPanel track={track} season={season} gameLaps={gameLaps} fetchedAt={liveTimes?.fetchedAt} status={liveTimesStatus} />
             <StatPanel track={track} />
             <TelemetryPanel track={track} />
           </section>
@@ -554,6 +558,7 @@ function App() {
           <SetupPanel setup={setup} weather={weather} compact />
           <EngineerSuitePanel
             track={track}
+            season={season}
             weather={weather}
             setup={setup}
             gridPosition={gridPosition}
@@ -688,9 +693,11 @@ function TelemetryPanel({ track }: { track: Track }) {
 
 function TimesPanel({
   track,
+  season,
   gameLaps,
 }: {
   track: Track;
+  season: SeasonMode;
   gameLaps: GameLap[];
   fetchedAt?: string;
   status: F1LapsStatus;
@@ -699,7 +706,7 @@ function TimesPanel({
     <article className="panel times-panel">
       <span className="eyebrow">Tiempos</span>
       <RealRecordPanel track={track} />
-      <TimeTable title="F1 2025 PS5" rows={gameLaps} />
+      <TimeTable title={season === '2025' ? 'F1 2025 PS5' : 'Referencia F1 25 PS5'} rows={gameLaps} />
     </article>
   );
 }
@@ -751,6 +758,7 @@ function TimeTable({ title, rows }: { title: string; rows: Array<{ rank: number;
 
 function EngineerSuitePanel({
   track,
+  season,
   weather,
   setup,
   gridPosition,
@@ -758,13 +766,14 @@ function EngineerSuitePanel({
   plan,
 }: {
   track: Track;
+  season: SeasonMode;
   weather: WeatherMode;
   setup: SetupPreset;
   gridPosition: number;
   raceDistance: RaceDistance;
   plan: ReturnType<typeof getStrategyPlan>;
 }) {
-  const notes = getEngineerRadioNotes(track, weather, setup, gridPosition, raceDistance);
+  const notes = getEngineerRadioNotes(track, weather, setup, gridPosition, raceDistance, season);
 
   return (
     <article className="panel engineer-suite-panel">
@@ -782,15 +791,15 @@ function EngineerSuitePanel({
       </section>
       <section className="engineer-suite-block engineer-suite-race">
         <span className="eyebrow">Ingeniero de carrera</span>
-        <h2>{plan.headline}</h2>
-        <p className="strategy-summary">{plan.summary}</p>
+        <h2>{adaptTextForSeason(plan.headline, season)}</h2>
+        <p className="strategy-summary">{adaptTextForSeason(plan.summary, season)}</p>
         <div className="strategy-sections">
           {plan.sections.map((section) => (
             <section key={section.title} className="strategy-block">
               <h3>{section.title}</h3>
               <ul>
                 {section.items.map((item) => (
-                  <li key={item}>{item}</li>
+                  <li key={item}>{adaptTextForSeason(item, season)}</li>
                 ))}
               </ul>
             </section>
@@ -801,7 +810,7 @@ function EngineerSuitePanel({
   );
 }
 
-function BrakingGuide({ track }: { track: Track }) {
+function BrakingGuide({ track, season }: { track: Track; season: SeasonMode }) {
   return (
     <article className="braking-guide">
       <div className="section-heading">
@@ -814,8 +823,8 @@ function BrakingGuide({ track }: { track: Track }) {
       <div className="braking-grid">
         {track.brakingGuide.map((item) => (
           <div className="brake-card" key={item.corner}>
-            <span>{item.corner} - {item.reference} - {item.gear}ª marcha.</span>
-            <small>{item.note}</small>
+            <span>{item.corner} - {adaptTextForSeason(item.reference, season)} - {item.gear}ª marcha.</span>
+            <small>{adaptTextForSeason(item.note, season)}</small>
           </div>
         ))}
       </div>

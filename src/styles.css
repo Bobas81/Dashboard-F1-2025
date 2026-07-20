@@ -402,9 +402,8 @@ select {
   background: #000;
 }
 
-.track-stage svg {
-  width: 100%;
-  height: 100%;
+.track-map-figure {
+  margin: 0;
 }
 
 .lebalap-map {
@@ -421,86 +420,123 @@ select {
   padding: 0;
 }
 
-.track-shadow {
-  fill: none;
-  stroke: rgba(0, 0, 0, 0.65);
-  stroke-width: 42;
+.vector-track-stage {
+  background:
+    radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.035), transparent 55%),
+    #050608;
 }
 
-.track-base {
+.vector-track-map {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.vector-track-bed,
+.vector-track-line {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.12);
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 28;
+  vector-effect: non-scaling-stroke;
 }
 
-.track-sector {
-  fill: none;
-  filter: url("#track-glow");
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 11;
+.vector-track-bed {
+  stroke: #30333b;
+  stroke-width: 18;
 }
 
-.sector-one {
-  stroke: #ff344f;
-  stroke-dasharray: 34 66;
-  stroke-dashoffset: 0;
-}
-
-.sector-two {
-  stroke: #f8b83e;
-  stroke-dasharray: 33 67;
-  stroke-dashoffset: -34;
-}
-
-.sector-three {
-  stroke: #36d7c9;
-  stroke-dasharray: 33 67;
-  stroke-dashoffset: -67;
-}
-
-.drs-line {
-  stroke: #7ef27f;
-  stroke-dasharray: 8 8;
+.vector-track-line {
   stroke-width: 4;
 }
 
-.drs-label,
-.speed-label,
-.start-text {
-  fill: #fff;
-  font-size: 15px;
-  font-weight: 900;
+.vector-track-line.sector-one,
+.vector-sector-key .sector-one {
+  stroke: #f10a78;
+  color: #f10a78;
 }
 
-.corner-dot {
-  fill: #171516;
-  stroke: #d6d1cd;
-  stroke-width: 3;
+.vector-track-line.sector-two,
+.vector-sector-key .sector-two {
+  stroke: #ffd51f;
+  color: #ffd51f;
 }
 
-.corner-label {
+.vector-track-line.sector-three,
+.vector-sector-key .sector-three {
+  stroke: #43aef4;
+  color: #43aef4;
+}
+
+.vector-track-line.sector-provisional {
+  stroke: #f4f5f7;
+}
+
+.vector-corner line {
+  stroke: #737781;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.vector-corner circle {
+  fill: #111318;
+  stroke: #f4f5f7;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.vector-corner text {
   fill: #fff;
-  font-size: 12px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 14px;
   font-weight: 900;
   text-anchor: middle;
+  dominant-baseline: central;
 }
 
-.speed-dot {
-  fill: #f7c948;
-  stroke: #111;
-  stroke-width: 3;
+.vector-sector-key {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  display: flex;
+  gap: 6px;
 }
 
-.start-box {
-  fill: #fff;
+.vector-sector-key span {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: rgba(5, 6, 8, 0.84);
+  padding: 4px 7px;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
 }
 
-.start-text {
-  fill: #080709;
-  text-anchor: middle;
+.vector-sector-key .sector-provisional {
+  color: #c7c9ce;
+}
+
+.track-map-figure figcaption {
+  margin-top: 8px;
+  color: #8f8884;
+  font-size: 0.72rem;
+  text-align: right;
+}
+
+.track-map-figure figcaption a {
+  color: #c9c1bd;
+}
+
+.track-stage-unavailable {
+  display: grid;
+  place-content: center;
+  gap: 8px;
+  padding: 24px;
+  color: #d6d1cd;
+  text-align: center;
+}
+
+.track-stage-unavailable span {
+  color: #8f8884;
 }
 
 .sector-strip {

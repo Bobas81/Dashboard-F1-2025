@@ -37,7 +37,7 @@ export interface RealTrackShape {
   points: TrackPoint[];
 }
 
-export interface CornerPoint extends TrackPoint {
+export interface CornerPoint {
   label: string;
 }
 
@@ -48,23 +48,14 @@ export interface BrakingReference {
   note: string;
 }
 
-export interface DrsSegment {
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-  label: string;
+export interface TrackMap {
+  sourceName: string;
+  corners: CornerPoint[];
 }
 
-export interface TrackMap {
-  viewBox: string;
-  path: string;
-  sourceName: string;
-  start: TrackPoint;
-  corners: CornerPoint[];
-  drs: DrsSegment[];
-  speedTrap: TrackPoint;
-}
+export type OvertakingSystem =
+  | { kind: 'drs'; zones: number }
+  | { kind: 'active-aero' };
 
 export interface TrackProfile {
   downforce: number;
@@ -92,7 +83,7 @@ export interface Track {
   lengthKm: number;
   laps: number;
   corners: number;
-  drsZones: number;
+  aero: Record<SeasonMode, OvertakingSystem>;
   difficulty: 'Baja' | 'Media' | 'Alta' | 'Extrema';
   setupFamily: 'power' | 'balanced' | 'downforce' | 'street' | 'technical';
   sectorFocus: [string, string, string];

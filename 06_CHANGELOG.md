@@ -1,5 +1,23 @@
 # Formula 1 Dashboard — CHANGELOG
 
+## 2026-07-18 — Colección vectorial homogénea 2026
+
+- Sustituida la presentación desigual de los mapas 2026 por una colección vectorial homogénea de 24 circuitos con numeración completa de curvas.
+- Usadas geometrías de telemetría FastF1 2025 y posiciones de curva MultiViewer en 23 trazados; MADRING procede de su SVG y posicionamiento oficial de 22 curvas.
+- Añadidos sectores derivados de telemetría cuando existen; MADRING queda deliberadamente neutro y marcado como pendiente de sectores para no inventar divisiones.
+- Conservados los mapas 2025 y las 24 imágenes oficiales 2026 como referencias locales; no se ha publicado ni eliminado ningún activo.
+- Validada la colección completa contra el catálogo: 24 mapas, numeración consecutiva, coordenadas dentro del lienzo y compilación de producción correcta.
+
+## 2026-07-17 — Mapas oficiales y separación reglamentaria 2025/2026
+
+- Incorporada una colección de 24 mapas oficiales de Formula 1 para 2026, con curvas numeradas y fuente visible por circuito; se documenta que la fuente mezcla dos niveles de detalle visual.
+- Eliminados del modo 2026 los indicadores de DRS y sustituidos por aerodinámica activa, Straight Mode y Overtake Mode; 2025 conserva su información DRS.
+- Eliminada la geometría generada como respaldo visual: un mapa ausente se declara como pendiente en lugar de inventar un circuito.
+- Corregido Albert Park a 14 curvas y actualizada su guía con referencias especializadas de SIM-racing.
+- Actualizado MADRING a 5,416 km y a su mapa oficial, manteniendo provisionales sus datos de rendimiento.
+- Conservados Baréin y Arabia Saudí como pruebas normales del calendario 2026 de la aplicación.
+- Separado el catálogo de imágenes por temporada y añadida trazabilidad de sus URL de procedencia.
+
 ## 2026-07-16 — Integración local controlada de historiales
 
 - Auditado el historial remoto preexistente de 115 commits y la raíz local independiente `cb0c93e`.

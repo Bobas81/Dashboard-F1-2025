@@ -93,7 +93,9 @@ const getTyreRule = (track: Track): TyreRule | null =>
     : null;
 
 const overtakeRating = (track: Track) => {
-  const score = track.drsZones * 16 + track.profile.braking * 0.32 + (track.lengthKm - 4) * 7 - difficultyPenalty[track.difficulty];
+  const legacyAero = track.aero['2025'];
+  const overtakingZones = legacyAero.kind === 'drs' ? legacyAero.zones : 0;
+  const score = overtakingZones * 16 + track.profile.braking * 0.32 + (track.lengthKm - 4) * 7 - difficultyPenalty[track.difficulty];
   if (score >= 58) return 'alta';
   if (score >= 44) return 'media';
   return 'baja';

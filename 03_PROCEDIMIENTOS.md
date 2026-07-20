@@ -42,7 +42,7 @@
 2. Añadir tiempos y setup o marcar explícitamente los datos pendientes/provisionales.
 3. Incorporar mapa en `public/circuit-maps/` y `src/data/circuitImages.ts`, o asegurar el respaldo SVG.
 4. Añadir el identificador a la temporada correspondiente.
-5. Comprobar estrategia, notas de ingeniero, frenadas, DRS y selector visual.
+5. Comprobar estrategia, notas de ingeniero, frenadas, DRS en 2025, aerodinámica activa en 2026 y selector visual.
 6. Ejecutar la validación completa.
 
 ## Publicar una versión local

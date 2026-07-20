@@ -1,4 +1,5 @@
-import type { RaceDistance, SetupPreset, Track, WeatherMode } from './types';
+import { adaptTextForSeason } from './season';
+import type { RaceDistance, SeasonMode, SetupPreset, Track, WeatherMode } from './types';
 
 interface TaggedNote {
   text: string;
@@ -28,6 +29,7 @@ export const getEngineerRadioNotes = (
   setup: SetupPreset,
   _gridPosition: number,
   _raceDistance: RaceDistance,
+  season: SeasonMode,
 ) => {
   const notes: TaggedNote[] = [];
   const add = (text: string, score: number, topic: string) => notes.push({ text, score, topic });
@@ -96,5 +98,5 @@ export const getEngineerRadioNotes = (
   add(track.engineer.overtaking[1], 44, 'overtake');
   add(track.engineer.commonMistakes[1], 42, 'mistake');
 
-  return uniqueNotes(notes);
+  return uniqueNotes(notes).map((note) => adaptTextForSeason(note, season));
 };

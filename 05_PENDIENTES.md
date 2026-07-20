@@ -5,9 +5,11 @@
 - [ ] Mantener actualizados los leaderboards F1Laps; la copia local vigente es del 2026-07-16.
 - [ ] Regenerar y revisar la biblioteca de setups; la vigente es del 2026-05-10.
 - [ ] Sustituir el modelo provisional 2026 por datos medidos y contrastados del Season Pack.
-- [ ] Validar MADRING con telemetría, mapa, referencias de frenada, DRS, estrategia y setups reales.
+- [ ] Validar MADRING con telemetría, sectores, referencias de frenada, aerodinámica activa, estrategia y setups reales; su geometría y sus 22 curvas oficiales ya están incorporadas.
 - [ ] Revalidar las referencias de F1 real y conservar una fuente directa trazable para cada registro.
-- [ ] Revisar qué imágenes de circuitos son definitivas y documentar su procedencia/licencia.
+- [x] Sustituir los mapas 2026 por una colección oficial con curvas numeradas y procedencia trazable.
+- [x] Homogeneizar el diseño de los 24 mapas 2026 sin inventar geometrías ni posiciones de curva: FastF1/MultiViewer para 23 trazados y fuente oficial MADRING para Madrid.
+- [ ] Confirmar las condiciones de reutilización pública de los mapas oficiales antes de distribuir la aplicación fuera del entorno local.
 
 ## Calidad y mantenimiento
 

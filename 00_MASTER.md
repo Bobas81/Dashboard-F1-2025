@@ -1,17 +1,17 @@
 # Formula 1 Dashboard — MASTER
 
-> Estado: aplicación compilable y operativa a fecha de 2026-07-13, con datos externos que requieren actualización periódica y contenido 2026 expresamente provisional.
+> Estado: aplicación compilable y operativa a fecha de 2026-07-18, con colección vectorial homogénea para 2026, mapas históricos conservados para 2025 y contenido de rendimiento 2026 expresamente provisional.
 
 ## Vigencia de valores dinámicos
 
 | Elemento | Estado | Última comprobación |
 |---|---|---|
-| Compilación de producción | Confirmada con `npm run build` | 2026-07-13 |
+| Compilación de producción | Confirmada con `npm run build` | 2026-07-18 |
 | Leaderboards F1Laps de F1 25 | Copia local completa para 24 circuitos, sin errores registrados | 2026-07-16 |
 | Biblioteca de setups F1 25 | Generada desde F1Laps y la guía de EA | 2026-05-10 |
 | Temporada 2025 | Catálogo operativo del juego base | 2026-07-13 |
-| Temporada 2026 | Modelo provisional adaptado al Season Pack 2026 | 2026-07-13; sustituir cuando existan mediciones fiables |
-| MADRING | Trazado, setup y recomendaciones provisionales | Pendiente de telemetría y datos externos contrastados |
+| Temporada 2026 | Calendario de producto de 24 circuitos y mapas vectoriales homogéneos con curvas numeradas; setups y rendimiento aún provisionales | 2026-07-18 |
+| MADRING | Geometría y 22 curvas tomadas del mapa oficial; sectores, setup y recomendaciones provisionales | Pendiente de telemetría contrastada |
 
 ## ESTADO OPERATIVO ACTUAL
 
@@ -24,17 +24,19 @@ La interfaz está construida con React, TypeScript y Vite. No utiliza backend: l
 | Área | Contenido |
 |---|---|
 | Temporadas | 2025 y un escenario provisional 2026 |
-| Circuitos | 24 por temporada; Imola pertenece a 2025 y MADRING sustituye su plaza en 2026 |
+| Circuitos | 24 por temporada; 2026 mantiene Baréin y Arabia Saudí como pruebas normales e incluye MADRING en lugar de Imola |
 | Clima | Seco, intermedio y mojado |
 | Carrera | Estrategia para 25 %, 50 % y 100 %, condicionada por posición de salida |
 | Setup | Aero, transmisión, geometría, suspensión, frenos y neumáticos |
-| Pilotaje | Mapa, curvas, DRS, frenadas, ERS, neumáticos, adelantamientos y errores comunes |
+| Pilotaje | Mapa con curvas numeradas; 2025 conserva sus imágenes históricas y 2026 usa vectores homogéneos sin zonas DRS, además de frenadas, ERS, neumáticos, adelantamientos y errores comunes |
 | Tiempos | Referencias reales curadas y top 3 local de F1Laps para F1 25 |
 
 ## Reglas operativas
 
 - No presentar el contenido 2026 como telemetría validada: se deriva de una transformación provisional del setup 2025.
-- No presentar MADRING como medido hasta sustituir sus datos provisionales por fuentes contrastadas.
+- No presentar el rendimiento ni los sectores de MADRING como medidos hasta sustituir sus datos provisionales por fuentes contrastadas; su geometría y sus 22 curvas oficiales sí están incorporadas.
+- Mantener Baréin y Arabia Saudí en el calendario 2026 de la aplicación sin tratamiento diferencial.
+- No generar trazados de sustitución: si falta un mapa real validado, mostrar el estado ausente.
 - Conservar `public/data/f1laps-times.json` como respaldo: si falla su carga, la aplicación utiliza los datos integrados en el código.
 - Ejecutar la compilación después de modificar tipos, circuitos, setups, estrategia o interfaz.
 - Revisar `fetchedAt`, errores y número de circuitos después de actualizar F1Laps.
