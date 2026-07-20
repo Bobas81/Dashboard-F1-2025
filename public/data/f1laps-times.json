@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-19T07:36:36.737Z",
+  "fetchedAt": "2026-07-20T08:19:11.839Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -121,11 +121,11 @@
       },
       {
         "rank": 3,
-        "time": "1:28.446",
-        "driver": "Riku",
+        "time": "1:28.167",
+        "driver": "patience14",
         "platform": "PS5",
-        "team": "F1 Custom Team",
-        "condition": "Time Trial seco - Apr 02, 2026",
+        "team": "Haas F1 Team",
+        "condition": "Time Trial seco - Jul 20, 2026",
         "source": "F1Laps F1 25 leaderboard (bahrain), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/bahrain/",
         "status": "verified"
       }
