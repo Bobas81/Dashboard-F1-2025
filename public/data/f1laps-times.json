@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-20T08:19:11.839Z",
+  "fetchedAt": "2026-07-21T07:43:11.840Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -697,11 +697,11 @@
       },
       {
         "rank": 3,
-        "time": "1:32.316",
-        "driver": "Euanian_",
+        "time": "1:32.297",
+        "driver": "Ethan24",
         "platform": "PS5",
-        "team": "McLaren",
-        "condition": "Time Trial seco - May 09, 2026",
+        "team": "Ferrari",
+        "condition": "Time Trial seco - Jul 20, 2026",
         "source": "F1Laps F1 25 leaderboard (las_vegas), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/las_vegas/",
         "status": "verified"
       }
