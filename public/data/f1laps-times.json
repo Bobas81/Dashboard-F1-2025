@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-21T07:43:11.840Z",
+  "fetchedAt": "2026-07-22T07:43:23.530Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -313,11 +313,11 @@
       },
       {
         "rank": 3,
-        "time": "1:10.272",
-        "driver": "Riku",
+        "time": "1:10.252",
+        "driver": "gobbigiorgio90",
         "platform": "PS5",
-        "team": "F1 Custom Team",
-        "condition": "Time Trial seco - May 15, 2026",
+        "team": "F1 Generic",
+        "condition": "Time Trial seco - Jul 21, 2026",
         "source": "F1Laps F1 25 leaderboard (canada), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/canada/",
         "status": "verified"
       }
