@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-29T08:00:39.332Z",
+  "fetchedAt": "2026-07-30T07:44:09.232Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -143,21 +143,21 @@
       },
       {
         "rank": 2,
-        "time": "1:27.828",
-        "driver": "ago-1097",
+        "time": "1:27.668",
+        "driver": "patience14",
         "platform": "PS5",
-        "team": "Ferrari",
-        "condition": "Time Trial seco - Jan 01, 2026",
+        "team": "Haas F1 Team",
+        "condition": "Time Trial seco - Jul 30, 2026",
         "source": "F1Laps F1 25 leaderboard (saudi_arabia), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/saudi_arabia/",
         "status": "verified"
       },
       {
         "rank": 3,
-        "time": "1:27.972",
-        "driver": "ok1ni",
+        "time": "1:27.828",
+        "driver": "ago-1097",
         "platform": "PS5",
-        "team": "Racing Bulls",
-        "condition": "Time Trial seco - Dec 01, 2025",
+        "team": "Ferrari",
+        "condition": "Time Trial seco - Jan 01, 2026",
         "source": "F1Laps F1 25 leaderboard (saudi_arabia), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/saudi_arabia/",
         "status": "verified"
       }
