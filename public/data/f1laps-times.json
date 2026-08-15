@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-08-14T06:47:23.683Z",
+  "fetchedAt": "2026-08-15T05:45:08.551Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -642,6 +642,38 @@
         "status": "verified"
       }
     ],
+    "interlagos": [
+      {
+        "rank": 1,
+        "time": "1:07.961",
+        "driver": "stacey",
+        "platform": "PS5",
+        "team": "McLaren",
+        "condition": "Time Trial seco - May 19, 2026",
+        "source": "F1Laps F1 25 leaderboard (brazil), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/brazil/",
+        "status": "verified"
+      },
+      {
+        "rank": 2,
+        "time": "1:08.287",
+        "driver": "leoelias0610",
+        "platform": "PS5",
+        "team": "Haas F1 Team",
+        "condition": "Time Trial seco - Mar 19, 2026",
+        "source": "F1Laps F1 25 leaderboard (brazil), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/brazil/",
+        "status": "verified"
+      },
+      {
+        "rank": 3,
+        "time": "1:08.308",
+        "driver": "Riku",
+        "platform": "PS5",
+        "team": "F1 Custom Team",
+        "condition": "Time Trial seco - May 26, 2026",
+        "source": "F1Laps F1 25 leaderboard (brazil), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/brazil/",
+        "status": "verified"
+      }
+    ],
     "vegas": [
       {
         "rank": 1,
@@ -739,7 +771,5 @@
       }
     ]
   },
-  "errors": {
-    "interlagos": "522 <none>"
-  }
+  "errors": {}
 }
