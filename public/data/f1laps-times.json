@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-19T09:35:43.518Z",
+  "fetchedAt": "2026-09-20T09:51:55.091Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -457,7 +457,7 @@
         "driver": "Matex",
         "platform": "PS5",
         "team": "F1 Custom Team",
-        "condition": "Time Trial seco",
+        "condition": "Time Trial seco - Mar 15, 2026",
         "source": "F1Laps F1 25 leaderboard (netherlands), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/netherlands/",
         "status": "verified"
       },
@@ -467,7 +467,7 @@
         "driver": "gdunks",
         "platform": "PS5",
         "team": "McLaren",
-        "condition": "Time Trial seco",
+        "condition": "Time Trial seco - Oct 24, 2025",
         "source": "F1Laps F1 25 leaderboard (netherlands), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/netherlands/",
         "status": "verified"
       },
@@ -477,7 +477,7 @@
         "driver": "Ox",
         "platform": "PS5",
         "team": "Red Bull Racing",
-        "condition": "Time Trial seco",
+        "condition": "Time Trial seco - May 28, 2026",
         "source": "F1Laps F1 25 leaderboard (netherlands), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/netherlands/",
         "status": "verified"
       }
