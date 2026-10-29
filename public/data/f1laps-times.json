@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-28T11:25:13.116Z",
+  "fetchedAt": "2026-10-29T11:35:34.044Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -31,6 +31,38 @@
         "team": "Red Bull Racing",
         "condition": "Time Trial seco - Mar 20, 2026",
         "source": "F1Laps F1 25 leaderboard (australia), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/australia/",
+        "status": "verified"
+      }
+    ],
+    "shanghai": [
+      {
+        "rank": 1,
+        "time": "1:32.174",
+        "driver": "dezzali@gmail.…",
+        "platform": "PS5",
+        "team": "McLaren",
+        "condition": "Time Trial seco - Apr 12, 2026",
+        "source": "F1Laps F1 25 leaderboard (china), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/china/",
+        "status": "verified"
+      },
+      {
+        "rank": 2,
+        "time": "1:32.408",
+        "driver": "ago-1097",
+        "platform": "PS5",
+        "team": "Ferrari",
+        "condition": "Time Trial seco - Jan 02, 2026",
+        "source": "F1Laps F1 25 leaderboard (china), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/china/",
+        "status": "verified"
+      },
+      {
+        "rank": 3,
+        "time": "1:32.419",
+        "driver": "Skylxrd",
+        "platform": "PS5",
+        "team": "Red Bull Racing",
+        "condition": "Time Trial seco - Mar 20, 2026",
+        "source": "F1Laps F1 25 leaderboard (china), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/china/",
         "status": "verified"
       }
     ],
@@ -739,7 +771,5 @@
       }
     ]
   },
-  "errors": {
-    "shanghai": "terminated"
-  }
+  "errors": {}
 }
