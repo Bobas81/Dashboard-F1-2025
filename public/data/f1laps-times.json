@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-01T11:53:58.460Z",
+  "fetchedAt": "2026-11-02T13:38:34.991Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -217,11 +217,11 @@
       },
       {
         "rank": 3,
-        "time": "1:15.201",
-        "driver": "bryanoliveira",
+        "time": "1:15.112",
+        "driver": "patience14",
         "platform": "PS5",
-        "team": "Ferrari",
-        "condition": "Time Trial seco - May 29, 2025",
+        "team": "Haas F1 Team",
+        "condition": "Time Trial seco - Nov 02, 2026",
         "source": "F1Laps F1 25 leaderboard (imola), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/imola/",
         "status": "verified"
       }
