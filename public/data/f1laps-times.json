@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-25T15:45:55.942Z",
+  "fetchedAt": "2026-11-26T15:27:43.820Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -559,21 +559,21 @@
       },
       {
         "rank": 2,
-        "time": "1:29.196",
-        "driver": "Riku",
+        "time": "1:28.923",
+        "driver": "Felix1907",
         "platform": "PS5",
-        "team": "F1 Custom Team",
-        "condition": "Time Trial seco - Apr 15, 2026",
+        "team": "McLaren",
+        "condition": "Time Trial seco - Nov 26, 2026",
         "source": "F1Laps F1 25 leaderboard (singapore), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/singapore/",
         "status": "verified"
       },
       {
         "rank": 3,
-        "time": "1:29.242",
-        "driver": "Ethan24",
+        "time": "1:29.196",
+        "driver": "Riku",
         "platform": "PS5",
-        "team": "Ferrari",
-        "condition": "Time Trial seco - Jul 10, 2026",
+        "team": "F1 Custom Team",
+        "condition": "Time Trial seco - Apr 15, 2026",
         "source": "F1Laps F1 25 leaderboard (singapore), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/singapore/",
         "status": "verified"
       }
@@ -677,6 +677,16 @@
     "vegas": [
       {
         "rank": 1,
+        "time": "1:31.881",
+        "driver": "Felix1907",
+        "platform": "PS5",
+        "team": "Ferrari",
+        "condition": "Time Trial seco - Nov 26, 2026",
+        "source": "F1Laps F1 25 leaderboard (las_vegas), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/las_vegas/",
+        "status": "verified"
+      },
+      {
+        "rank": 2,
         "time": "1:32.206",
         "driver": "leoelias0610",
         "platform": "PS5",
@@ -686,22 +696,12 @@
         "status": "verified"
       },
       {
-        "rank": 2,
+        "rank": 3,
         "time": "1:32.290",
         "driver": "Riku",
         "platform": "PS5",
         "team": "F1 Custom Team",
         "condition": "Time Trial seco - Apr 20, 2026",
-        "source": "F1Laps F1 25 leaderboard (las_vegas), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/las_vegas/",
-        "status": "verified"
-      },
-      {
-        "rank": 3,
-        "time": "1:32.297",
-        "driver": "Ethan24",
-        "platform": "PS5",
-        "team": "Ferrari",
-        "condition": "Time Trial seco - Jul 20, 2026",
         "source": "F1Laps F1 25 leaderboard (las_vegas), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/las_vegas/",
         "status": "verified"
       }
