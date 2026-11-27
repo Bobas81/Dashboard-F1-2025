@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-26T15:27:43.820Z",
+  "fetchedAt": "2026-11-27T15:16:55.299Z",
   "source": "https://www.f1laps.com/f1-25/leaderboard",
   "tracks": {
     "melbourne": [
@@ -537,11 +537,11 @@
       },
       {
         "rank": 3,
-        "time": "1:39.735",
-        "driver": "leoelias0610",
+        "time": "1:39.642",
+        "driver": "Felix1907",
         "platform": "PS5",
-        "team": "Mercedes",
-        "condition": "Time Trial seco - Mar 19, 2026",
+        "team": "McLaren",
+        "condition": "Time Trial seco - Nov 26, 2026",
         "source": "F1Laps F1 25 leaderboard (azerbaijan), actualizado automaticamente: https://www.f1laps.com/f1-25/leaderboard/azerbaijan/",
         "status": "verified"
       }
